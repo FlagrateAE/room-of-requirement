@@ -1,0 +1,42 @@
+using System;
+using UnityEngine;
+
+/// <summary>
+/// Represents a spell, including its form, controller type, power, and modifiers.
+/// </summary>
+[Serializable]
+public class SpellData
+{
+    public readonly SpellForm Form;
+    public readonly Type Controller;
+    public readonly Color Color;
+    public float Power { get; private set; }
+    public float FlightSpeed { get; private set; } = 10f;
+
+
+    public SpellData(SpellForm form, Type controller, Color color, float power)
+    {
+        Form = form;
+        Controller = controller;
+        Color = color;
+        Power = power;
+    }
+
+    public void RegisterModifiers(string[] modifiersNames, ModifierConfig config)
+    {
+        foreach (var modifier in modifiersNames)
+        {
+            switch (modifier)
+            {
+                case "Amplify":
+                    Power *= config.GetFactor("Amplify");
+                    break;
+
+                case "Accelerate":
+                case "Decelerate":
+                    FlightSpeed *= config.GetFactor(modifier);
+                    break;
+            }
+        }
+    }
+}

@@ -1,0 +1,54 @@
+using UnityEngine;
+using System;
+
+[RequireComponent(typeof(Rigidbody))]
+public class SpellProjectile : MonoBehaviour
+{
+    public SpellData SpellData { get; private set; }
+
+    private float _speed;
+    private string _effectName;
+    private Rigidbody _rb;
+    private bool _armed;
+
+    // Launch the projectile
+    private void Start()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _rb.linearVelocity = transform.forward * _speed;
+    }
+
+    // Arm only when spell exits the player (to avoid player shooting themselves)
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+            _armed = true;
+    }
+
+    private void OnTriggerEnter(Collider target)
+    {
+        if (
+            _armed
+            && target.gameObject.TryGetComponent(out SpellInteractable interactable)
+            && interactable.IsCompatibleWith(_effectName)
+        )
+            interactable.ApplySpell(SpellData);
+    }
+
+    public void LoadSpellData(SpellData data)
+    {
+        SpellData = data;
+        _effectName = data.Controller.Name.Split("Controller")[0];
+        _speed = data.FlightSpeed;
+        SetColor(data.Color);
+    }
+
+    private void SetColor(Color color)
+    {
+        const float BrightenSaturation = -0.1f;
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+
+        var spellParticles = GetComponent<ParticleSystem>().main;
+        spellParticles.startColor = Color.HSVToRGB(h, Mathf.Clamp(s + BrightenSaturation, 0, 1), v);
+    }
+}

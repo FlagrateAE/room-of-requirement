@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cf01fe46f990124dbb5dcb8f70d1576, type: 3}
+  m_Name: BaseFormConfig
+  m_EditorClassIdentifier: 
+  SelfIcon: {fileID: 0}
+  SelfDescription: Applies the spell efect to the caster himself
+  ProjectileIcon: {fileID: 0}
+  ProjectileDescription: Sends a magic projectile that applies the spell effect to
+    the target (first thing it hits)
+  MagicSphereIcon: {fileID: 0}
+  MagicSphereDescription: Creates a magic sphere that applies the spell effect to
+    all things inside it
