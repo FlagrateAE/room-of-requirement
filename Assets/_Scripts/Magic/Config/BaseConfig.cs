@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Reflection;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class BaseConfig : ScriptableObject
 {
@@ -25,6 +25,19 @@ public class BaseConfig : ScriptableObject
         return default;
     }
 
-    public Image GetIcon(string glyphName) => GetValue<Image>(glyphName);
+    public Texture2D GetIcon(string glyphName) => GetValue<Texture2D>(glyphName);
     public string GetDescription(string glyphName) => GetValue<string>(glyphName);
+
+    public Texture2D[] GetAllIcons()
+    {
+        FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (FieldInfo field in fields)
+        {
+            if (field.FieldType == typeof(Texture2D))
+            {
+                return (Texture2D[])field.GetValue(this);
+            }
+        }
+        return null;
+    }
 }
