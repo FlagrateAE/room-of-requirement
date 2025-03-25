@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: BaseModifierConfig
   m_EditorClassIdentifier: 
   AmplifyFactor: 1.5
+  AmplifyIcon: {fileID: 21300000, guid: ba4552264b70b9e4cb141a35f94eaae7, type: 3}
+  AccelerateFactor: 1.5
+  AccelerateIcon: {fileID: 21300000, guid: 0d8b8aaaf4e67af468e71ef55ed61df6, type: 3}
+  DecelerateFactor: 0.5
+  DecelerateIcon: {fileID: 21300000, guid: 9b88e30d1961dd54ca4518628a9f3a1b, type: 3}

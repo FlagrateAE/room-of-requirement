@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 [CreateAssetMenu(fileName = "BaseEffectConfig", menuName = "Magic Configs/EffectConfig", order = 1)]
 public class EffectConfig : BaseConfig

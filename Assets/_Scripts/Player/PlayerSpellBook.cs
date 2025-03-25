@@ -4,20 +4,31 @@ using System;
 [RequireComponent(typeof(PlayerSpellCast))]
 public class PlayerSpellBook : MonoBehaviour
 {
+    private PlayerSpellCast _spellCast;
     [SerializeField]
+    private GameObject _spellBook;
+    [SerializeField]
+    private SpellBookUI _bookUI;
     private Animator _bookAnimator;
+
+    [SerializeField]
+    private FormConfig _formConfig;
     [SerializeField]
     private EffectConfig _effectConfig;
     [SerializeField]
     private ModifierConfig _modifierConfig;
-    private PlayerSpellCast _spellCast;
 
-    private bool _isOpen;
+    private void Awake()
+    {
+        _bookUI.TransferConfigs(_formConfig, _effectConfig, _modifierConfig);
+    }
 
     private void Start()
     {
         _spellCast = GetComponent<PlayerSpellCast>();
+        _bookAnimator = _spellBook.GetComponent<Animator>();
     }
+
     private void Update()
     {
         if (Input.GetKeyUp(KeyCode.Alpha1))
@@ -45,11 +56,6 @@ public class PlayerSpellBook : MonoBehaviour
         {
             _bookAnimator.SetTrigger("BookToggle");
         }
-    }
-
-    private void LoadGlyphData(FormConfig formConfig, EffectConfig effectConfig, ModifierConfig modifierConfig)
-    {
-        
     }
 
     /// <summary>

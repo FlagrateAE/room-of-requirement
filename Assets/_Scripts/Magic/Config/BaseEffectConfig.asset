@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   LaunchColor: {r: 1, g: 1, b: 1, a: 1}
   LaunchForce: 10
-  LaunchIcon: {fileID: 0}
+  LaunchIcon: {fileID: 21300000, guid: 3cd1c99b443c40841a7e6e869d6e04bd, type: 3}
   LaunchDescription: 
   EnlargeColor: {r: 1, g: 0, b: 0, a: 1}
   EnlargeFactor: 1.5
+  EnlargeIcon: {fileID: 21300000, guid: 20e931155dc7ade44ad9237769ad624f, type: 3}
+  EnlargeDescription: Makes object larger. There is a size limit
