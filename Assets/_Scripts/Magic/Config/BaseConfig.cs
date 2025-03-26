@@ -10,7 +10,7 @@ public class BaseConfig : ScriptableObject
     /// <typeparam name="T">The type of the field</typeparam>
     /// <param name="fieldName">The field name to search for</param>
     /// <returns>The value of the field if found, or default(T) if not.</returns>
-    private protected T GetValue<T>(string fieldName)
+    protected T GetValue<T>(string fieldName)
     {
         FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
         foreach (FieldInfo field in fields)
@@ -24,6 +24,8 @@ public class BaseConfig : ScriptableObject
         Debug.LogError($"No field of type {typeof(T)} found containing name: {fieldName}");
         return default;
     }
+
+    public bool GlyphExists(string glyphName) => GetValue<string>(glyphName) != null;
 
     public Sprite GetIcon(string glyphName) => GetValue<Sprite>(glyphName);
     public string GetDescription(string glyphName) => GetValue<string>(glyphName);

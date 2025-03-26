@@ -1,16 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [RequireComponent(typeof(Canvas))]
 public class SpellBookUI : MonoBehaviour
 {
-    private FormConfig _formConfig;
-    private EffectConfig _effectConfig;
-    private ModifierConfig _modifierConfig;
-
     private HorizontalLayoutGroup _formsContainer;
     private HorizontalLayoutGroup _effectsContainer;
     private HorizontalLayoutGroup _modifiersContainer;
+
+    private TextMeshPro _nameInfo;
+    private Image _iconInfo;
+    private TextMeshPro _descriptionInfo;
 
     private void Start()
     {
@@ -18,15 +19,19 @@ public class SpellBookUI : MonoBehaviour
         _effectsContainer = GetContainer("Effects");
         _modifiersContainer = GetContainer("Modifiers");
 
-        foreach (var formIcon in _formConfig.GetAllIcons())
+        _nameInfo = transform.Find("Info/Name").GetComponent<TextMeshPro>();
+        _iconInfo = transform.Find("Info/Icon").GetComponent<Image>();
+        _descriptionInfo = transform.Find("Info/Description").GetComponent<TextMeshPro>();
+
+        foreach (var formIcon in ConfigManager.Instance.GetIcons(GlyphType.Form))
         {
             AddIconToContainer(_formsContainer, formIcon.name, formIcon);
         }
-        foreach (var effectIcon in _effectConfig.GetAllIcons())
+        foreach (var effectIcon in ConfigManager.Instance.GetIcons(GlyphType.Effect))
         {
             AddIconToContainer(_effectsContainer, effectIcon.name, effectIcon);
         }
-        foreach (var modifierIcon in _modifierConfig.GetAllIcons())
+        foreach (var modifierIcon in ConfigManager.Instance.GetIcons(GlyphType.Modifier))
         {
             AddIconToContainer(_modifiersContainer, modifierIcon.name, modifierIcon);
         }
@@ -42,19 +47,23 @@ public class SpellBookUI : MonoBehaviour
     {
         int IconSize = 60;
 
-        GameObject icon = new(name: $"{glyphName}Icon", typeof(Image));
+        GameObject icon = new(name: $"{glyphName}Icon", typeof(Image), typeof(Button));
 
+        icon.GetComponent<RectTransform>().sizeDelta = Vector2.one * IconSize;
         icon.GetComponent<Image>().sprite = iconSprite;
         icon.GetComponent<Image>().preserveAspect = true;
-        icon.GetComponent<RectTransform>().sizeDelta = Vector2.one * IconSize;
-
+        icon.GetComponent<Button>().onClick.AddListener(() => DisplayInfo(
+            glyphName, iconSprite,
+            ConfigManager.Instance.GetDescription(glyphName)
+        ));
+        
         icon.transform.SetParent(container.transform);
     }
 
-    public void TransferConfigs(FormConfig formConfig, EffectConfig effectConfig, ModifierConfig modifierConfig)
+    private void DisplayInfo(string glyphName, Sprite icon, string glyphDescription)
     {
-        _formConfig = formConfig;
-        _effectConfig = effectConfig;
-        _modifierConfig = modifierConfig;
+        _nameInfo.text = glyphName;
+        _iconInfo.sprite = icon;
+        _descriptionInfo.text = glyphDescription;
     }
 }

@@ -14,19 +14,7 @@ public class PlayerSpellBook : MonoBehaviour
     private SpellBookUI _bookUI;
     private Animator _bookAnimator;
 
-    [SerializeField]
-    private FormConfig _formConfig;
-    [SerializeField]
-    private EffectConfig _effectConfig;
-    [SerializeField]
-    private ModifierConfig _modifierConfig;
-
     private bool _isOpen;
-
-    private void Awake()
-    {
-        _bookUI.TransferConfigs(_formConfig, _effectConfig, _modifierConfig);
-    }
 
     private void Start()
     {
@@ -84,12 +72,12 @@ public class PlayerSpellBook : MonoBehaviour
         SpellData result = new(
             form,
             controller,
-            _effectConfig.GetColor(effectName),
-            _effectConfig.GetPower(effectName)
+            ConfigManager.Instance.GetEffectColor(effectName),
+            ConfigManager.Instance.GetEffectPower(effectName)
         );
 
         if (modifiersNames != null)
-            result.RegisterModifiers(modifiersNames, _modifierConfig);
+            result.RegisterModifiers(modifiersNames);
 
         return result;
     }

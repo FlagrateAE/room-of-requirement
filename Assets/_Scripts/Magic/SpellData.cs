@@ -22,19 +22,19 @@ public class SpellData
         Power = power;
     }
 
-    public void RegisterModifiers(string[] modifiersNames, ModifierConfig config)
+    public void RegisterModifiers(string[] modifiersNames)
     {
         foreach (var modifier in modifiersNames)
         {
             switch (modifier)
             {
                 case "Amplify":
-                    Power *= config.GetFactor("Amplify");
+                    Power *= ConfigManager.Instance.GetModifierFactor("Amplify");
                     break;
 
                 case "Accelerate":
                 case "Decelerate":
-                    FlightSpeed *= config.GetFactor(modifier);
+                    FlightSpeed *= ConfigManager.Instance.GetModifierFactor(modifier);
                     break;
             }
         }
