@@ -12,15 +12,15 @@ public class PlayerCamera : MonoBehaviour
 
     private Vector2 _mouseDelta;
     private float _pitch;
-    
 
-    void Start()
+
+    private void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked;
         _mouseInput = InputSystem.actions.FindAction("Look");
+        LockCursor();
     }
 
-    void Update()
+    private void Update()
     {
         _mouseDelta = _mouseInput.ReadValue<Vector2>();
 
@@ -30,4 +30,7 @@ public class PlayerCamera : MonoBehaviour
         _pitch = Math.Clamp(_pitch, -90, 90);
         _camera.localRotation = Quaternion.AngleAxis(_pitch, Vector3.left);
     }
+
+    public void LockCursor() => Cursor.lockState = CursorLockMode.Locked;
+    public void UnlockCursor() => Cursor.lockState = CursorLockMode.None;
 }

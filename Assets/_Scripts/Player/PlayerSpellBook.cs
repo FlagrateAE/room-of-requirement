@@ -1,10 +1,13 @@
 using UnityEngine;
 using System;
 
-[RequireComponent(typeof(PlayerSpellCast))]
+[RequireComponent(typeof(PlayerSpellCast), typeof(PlayerCamera), typeof(PlayerMovement))]
 public class PlayerSpellBook : MonoBehaviour
 {
     private PlayerSpellCast _spellCast;
+    private PlayerMovement _playerMovement;
+    private PlayerCamera _playerCamera;
+
     [SerializeField]
     private GameObject _spellBook;
     [SerializeField]
@@ -18,6 +21,8 @@ public class PlayerSpellBook : MonoBehaviour
     [SerializeField]
     private ModifierConfig _modifierConfig;
 
+    private bool _isOpen;
+
     private void Awake()
     {
         _bookUI.TransferConfigs(_formConfig, _effectConfig, _modifierConfig);
@@ -26,6 +31,8 @@ public class PlayerSpellBook : MonoBehaviour
     private void Start()
     {
         _spellCast = GetComponent<PlayerSpellCast>();
+        _playerMovement = GetComponent<PlayerMovement>();
+        _playerCamera = GetComponent<PlayerCamera>();
         _bookAnimator = _spellBook.GetComponent<Animator>();
     }
 
@@ -55,6 +62,12 @@ public class PlayerSpellBook : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.E))
         {
             _bookAnimator.SetTrigger("BookToggle");
+
+            if (_isOpen)
+                _playerCamera.LockCursor();
+
+            _playerMovement.enabled = _playerCamera.enabled = _isOpen;
+            _isOpen = !_isOpen;
         }
     }
 
