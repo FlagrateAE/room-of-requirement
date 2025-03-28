@@ -5,23 +5,30 @@ using TMPro;
 [RequireComponent(typeof(Canvas))]
 public class SpellBookUI : MonoBehaviour
 {
+    private Canvas _canvas;
+    private PlayerCamera _playerCamera;
+
     private HorizontalLayoutGroup _formsContainer;
     private HorizontalLayoutGroup _effectsContainer;
     private HorizontalLayoutGroup _modifiersContainer;
 
-    private TextMeshPro _nameInfo;
+    private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
-    private TextMeshPro _descriptionInfo;
+    private TextMeshProUGUI _descriptionInfo;
 
     private void Start()
     {
+        _canvas = GetComponent<Canvas>();
+        _playerCamera = GetComponentInParent<PlayerCamera>();
+
         _formsContainer = GetContainer("Forms");
         _effectsContainer = GetContainer("Effects");
         _modifiersContainer = GetContainer("Modifiers");
 
-        _nameInfo = transform.Find("Info/Name").GetComponent<TextMeshPro>();
-        _iconInfo = transform.Find("Info/Icon").GetComponent<Image>();
-        _descriptionInfo = transform.Find("Info/Description").GetComponent<TextMeshPro>();
+        Transform infoContainer = transform.Find("Info");
+        _nameInfo = infoContainer.Find("Name").GetComponent<TextMeshProUGUI>();
+        _iconInfo = transform.GetComponentInChildren<Image>();
+        _descriptionInfo = infoContainer.Find("Description").GetComponent<TextMeshProUGUI>();
 
         foreach (var formIcon in ConfigManager.Instance.GetIcons(GlyphType.Form))
         {
@@ -56,7 +63,7 @@ public class SpellBookUI : MonoBehaviour
             glyphName, iconSprite,
             ConfigManager.Instance.GetDescription(glyphName)
         ));
-        
+
         icon.transform.SetParent(container.transform);
     }
 
@@ -65,5 +72,11 @@ public class SpellBookUI : MonoBehaviour
         _nameInfo.text = glyphName;
         _iconInfo.sprite = icon;
         _descriptionInfo.text = glyphDescription;
+    }
+
+    public void ToggleUI()
+    {
+        _canvas.enabled = !_canvas.enabled;
+        _playerCamera.ToggleCursorLock();
     }
 }

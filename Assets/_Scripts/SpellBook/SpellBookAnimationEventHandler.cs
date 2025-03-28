@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class SpellBookAnimationEventHandler : MonoBehaviour
 {
-    private PlayerCamera _playerCamera;
+    private SpellBookUI _bookUI;
 
     private void Start()
     {
-        _playerCamera = transform.GetComponentInParent<PlayerCamera>();
+        _bookUI = transform.parent.parent.GetComponentInChildren<SpellBookUI>();
     }
 
-    public void UnlockCursor() => _playerCamera.UnlockCursor();
+    public void ToggleUI() => _bookUI.ToggleUI();
 }

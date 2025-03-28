@@ -17,7 +17,7 @@ public class PlayerCamera : MonoBehaviour
     private void Start()
     {
         _mouseInput = InputSystem.actions.FindAction("Look");
-        LockCursor();
+        ToggleCursorLock();
     }
 
     private void Update()
@@ -31,6 +31,11 @@ public class PlayerCamera : MonoBehaviour
         _camera.localRotation = Quaternion.AngleAxis(_pitch, Vector3.left);
     }
 
-    public void LockCursor() => Cursor.lockState = CursorLockMode.Locked;
-    public void UnlockCursor() => Cursor.lockState = CursorLockMode.None;
+    public void ToggleCursorLock()
+    {
+        if (Cursor.lockState == CursorLockMode.Locked)
+            Cursor.lockState = CursorLockMode.None;
+        else
+            Cursor.lockState = CursorLockMode.Locked;
+    }
 }

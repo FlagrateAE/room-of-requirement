@@ -52,7 +52,7 @@ public class PlayerSpellBook : MonoBehaviour
             _bookAnimator.SetTrigger("BookToggle");
 
             if (_isOpen)
-                _playerCamera.LockCursor();
+                _bookUI.ToggleUI();
 
             _playerMovement.enabled = _playerCamera.enabled = _isOpen;
             _isOpen = !_isOpen;
