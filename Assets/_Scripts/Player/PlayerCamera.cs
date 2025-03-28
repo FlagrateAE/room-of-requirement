@@ -38,4 +38,9 @@ public class PlayerCamera : MonoBehaviour
         else
             Cursor.lockState = CursorLockMode.Locked;
     }
+
+    public void ToggleCameraLock()
+    {
+        enabled = !enabled;
+    }
 }

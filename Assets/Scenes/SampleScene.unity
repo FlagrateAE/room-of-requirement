@@ -1008,8 +1008,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b50c81db9929e647b58952630f217f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spellBook: {fileID: 8284597778589165643}
-  _bookUI: {fileID: 2133577915}
+  _bookCanvas: {fileID: 2133577910}
 --- !u!114 &506267117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1628,8 +1627,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 339.6, y: -183}
-  m_SizeDelta: {x: 579.21, y: 159.6879}
+  m_AnchoredPosition: {x: 339.6, y: 289.62457}
+  m_SizeDelta: {x: 579.21, y: 74.937}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1614792290
 MonoBehaviour:
@@ -1651,9 +1650,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '
-
-'
+  m_text: Glyph
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5932fae66e61ddf4aa4b8f10a0c8ae7e, type: 2}
   m_sharedMaterial: {fileID: -7332276779858325493, guid: 5932fae66e61ddf4aa4b8f10a0c8ae7e, type: 2}
@@ -1680,15 +1677,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 45.3
-  m_fontSizeBase: 45.3
+  m_fontSize: 59.91
+  m_fontSizeBase: 59.91
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2016,8 +2013,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 339.6, y: 290}
-  m_SizeDelta: {x: 579.2091, y: 58.3039}
+  m_AnchoredPosition: {x: 339.6, y: -183}
+  m_SizeDelta: {x: 579.21, y: 159.6879}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2072783233
 MonoBehaviour:
@@ -2073,8 +2070,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2305,7 +2302,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2133577911
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2377,7 +2374,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2133577910}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}

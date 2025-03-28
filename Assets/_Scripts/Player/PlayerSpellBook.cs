@@ -5,13 +5,11 @@ using System;
 public class PlayerSpellBook : MonoBehaviour
 {
     private PlayerSpellCast _spellCast;
-    private PlayerMovement _playerMovement;
-    private PlayerCamera _playerCamera;
+    private PlayerMovement _movement;
+    private PlayerCamera _camera;
 
     [SerializeField]
-    private GameObject _spellBook;
-    [SerializeField]
-    private SpellBookUI _bookUI;
+    private GameObject _bookCanvas;
     private Animator _bookAnimator;
 
     private bool _isOpen;
@@ -19,9 +17,10 @@ public class PlayerSpellBook : MonoBehaviour
     private void Start()
     {
         _spellCast = GetComponent<PlayerSpellCast>();
-        _playerMovement = GetComponent<PlayerMovement>();
-        _playerCamera = GetComponent<PlayerCamera>();
-        _bookAnimator = _spellBook.GetComponent<Animator>();
+        _movement = GetComponent<PlayerMovement>();
+        _camera = GetComponent<PlayerCamera>();
+
+        _bookAnimator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -52,10 +51,7 @@ public class PlayerSpellBook : MonoBehaviour
             _bookAnimator.SetTrigger("BookToggle");
 
             if (_isOpen)
-                _bookUI.ToggleUI();
-
-            _playerMovement.enabled = _playerCamera.enabled = _isOpen;
-            _isOpen = !_isOpen;
+                ToggleUI();
         }
     }
 
@@ -80,5 +76,14 @@ public class PlayerSpellBook : MonoBehaviour
             result.RegisterModifiers(modifiersNames);
 
         return result;
+    }
+
+    public void ToggleUI()
+    {
+        _camera.ToggleCursorLock();
+        _camera.ToggleCameraLock();
+        _movement.ToggleMovment();
+        _bookCanvas.SetActive(!_bookCanvas.activeSelf);
+        _isOpen = !_isOpen;
     }
 }

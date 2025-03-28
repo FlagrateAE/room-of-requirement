@@ -42,7 +42,6 @@ public class SpellBookUI : MonoBehaviour
         {
             AddIconToContainer(_modifiersContainer, modifierIcon.name, modifierIcon);
         }
-
     }
 
     private HorizontalLayoutGroup GetContainer(string glyphType)
@@ -72,11 +71,5 @@ public class SpellBookUI : MonoBehaviour
         _nameInfo.text = glyphName;
         _iconInfo.sprite = icon;
         _descriptionInfo.text = glyphDescription;
-    }
-
-    public void ToggleUI()
-    {
-        _canvas.enabled = !_canvas.enabled;
-        _playerCamera.ToggleCursorLock();
     }
 }

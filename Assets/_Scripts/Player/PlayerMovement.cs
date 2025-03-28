@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 _movement;
 
     public float Speed = 3f;
-    
+
 
     private void Start()
     {
@@ -26,5 +26,10 @@ public class PlayerMovement : MonoBehaviour
             _rb.linearVelocity.y,
             _movement.y
         );
+    }
+
+    public void ToggleMovment()
+    {
+        enabled = !enabled;
     }
 }
