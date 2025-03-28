@@ -42,6 +42,8 @@ public class SpellBookUI : MonoBehaviour
         {
             AddIconToContainer(_modifiersContainer, modifierIcon.name, modifierIcon);
         }
+
+        DisplayInfo("Self", ConfigManager.Instance.GetIcon("Self"), ConfigManager.Instance.GetDescription("Self"));
     }
 
     private HorizontalLayoutGroup GetContainer(string glyphType)

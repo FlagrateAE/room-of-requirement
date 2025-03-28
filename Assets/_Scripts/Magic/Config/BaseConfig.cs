@@ -21,11 +21,10 @@ public class BaseConfig : ScriptableObject
             }
         }
 
-        Debug.LogError($"No field of type {typeof(T)} found containing name: {fieldName}");
         return default;
     }
 
-    public bool GlyphExists(string glyphName) => GetValue<string>(glyphName) != null;
+    public bool GlyphExists(string glyphName) => GetValue<string>($"{glyphName}") != null;
 
     public Sprite GetIcon(string glyphName) => GetValue<Sprite>(glyphName);
     public string GetDescription(string glyphName) => GetValue<string>(glyphName);
