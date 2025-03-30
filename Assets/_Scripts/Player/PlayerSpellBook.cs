@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.PlayerLoop;
 
 [RequireComponent(typeof(PlayerSpellCast), typeof(PlayerCamera), typeof(PlayerMovement))]
 public class PlayerSpellBook : MonoBehaviour
@@ -7,12 +8,10 @@ public class PlayerSpellBook : MonoBehaviour
     private PlayerSpellCast _spellCast;
     private PlayerMovement _movement;
     private PlayerCamera _camera;
-
-    [SerializeField]
-    private GameObject _bookCanvas;
+    private CanvasGroup _bookCanvas;
     private Animator _bookAnimator;
 
-    private bool _isOpen;
+    private bool _isOpen = false;
 
     private void Start()
     {
@@ -21,6 +20,7 @@ public class PlayerSpellBook : MonoBehaviour
         _camera = GetComponent<PlayerCamera>();
 
         _bookAnimator = GetComponentInChildren<Animator>();
+        _bookCanvas = GetComponentInChildren<CanvasGroup>();
     }
 
     private void Update()
@@ -83,7 +83,7 @@ public class PlayerSpellBook : MonoBehaviour
         _camera.ToggleCursorLock();
         _camera.ToggleCameraLock();
         _movement.ToggleMovment();
-        _bookCanvas.SetActive(!_bookCanvas.activeSelf);
+        _bookCanvas.alpha = Mathf.Abs(_bookCanvas.alpha - 1);
         _isOpen = !_isOpen;
     }
 }

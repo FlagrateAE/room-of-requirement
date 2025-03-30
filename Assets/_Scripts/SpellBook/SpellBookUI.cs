@@ -16,7 +16,7 @@ public class SpellBookUI : MonoBehaviour
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
 
-    private void Start()
+    private void Awake()
     {
         _canvas = GetComponent<Canvas>();
         _playerCamera = GetComponentInParent<PlayerCamera>();
