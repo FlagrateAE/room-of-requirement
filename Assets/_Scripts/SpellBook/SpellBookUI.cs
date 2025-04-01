@@ -1,26 +1,29 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using System;
 
 [RequireComponent(typeof(Canvas))]
 public class SpellBookUI : MonoBehaviour
 {
-    private Canvas _canvas;
-    private PlayerCamera _playerCamera;
+    [SerializeField]
+    private GameObject _iconPrefab;
 
-    private HorizontalLayoutGroup _formsContainer;
-    private HorizontalLayoutGroup _effectsContainer;
-    private HorizontalLayoutGroup _modifiersContainer;
+    private Transform _formsContainer;
+    private Transform _effectsContainer;
+    private Transform _modifiersContainer;
+    private Transform _spellContainer;
 
     private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
 
-    private void Awake()
-    {
-        _canvas = GetComponent<Canvas>();
-        _playerCamera = GetComponentInParent<PlayerCamera>();
+    private readonly List<string> _currentSpell = new();
 
+    private void Start()
+    {
         _formsContainer = GetContainer("Forms");
         _effectsContainer = GetContainer("Effects");
         _modifiersContainer = GetContainer("Modifiers");
@@ -30,48 +33,121 @@ public class SpellBookUI : MonoBehaviour
         _iconInfo = transform.GetComponentInChildren<Image>();
         _descriptionInfo = infoContainer.Find("Description").GetComponent<TextMeshProUGUI>();
 
+        _spellContainer = transform.Find("Spell");
+
         foreach (var formIcon in ConfigManager.Instance.GetIcons(GlyphType.Form))
         {
-            AddIconToContainer(_formsContainer, formIcon.name, formIcon);
+            AddIconToCatalogue(_formsContainer, formIcon.name);
         }
         foreach (var effectIcon in ConfigManager.Instance.GetIcons(GlyphType.Effect))
         {
-            AddIconToContainer(_effectsContainer, effectIcon.name, effectIcon);
+            AddIconToCatalogue(_effectsContainer, effectIcon.name);
         }
         foreach (var modifierIcon in ConfigManager.Instance.GetIcons(GlyphType.Modifier))
         {
-            AddIconToContainer(_modifiersContainer, modifierIcon.name, modifierIcon);
+            AddIconToCatalogue(_modifiersContainer, modifierIcon.name);
         }
 
-        DisplayInfo("Self", ConfigManager.Instance.GetIcon("Self"), ConfigManager.Instance.GetDescription("Self"));
+        DisplayGlyphInfo("Self");
     }
 
-    private HorizontalLayoutGroup GetContainer(string glyphType)
+    private Transform GetContainer(string glyphType)
     {
-        return transform.Find(glyphType).GetComponentInChildren<HorizontalLayoutGroup>();
+        return transform.Find(glyphType).GetComponentInChildren<HorizontalLayoutGroup>().transform;
     }
 
-    private void AddIconToContainer(HorizontalLayoutGroup container, string glyphName, Sprite iconSprite)
-    {
-        int IconSize = 60;
-
-        GameObject icon = new(name: $"{glyphName}Icon", typeof(Image), typeof(Button));
-
-        icon.GetComponent<RectTransform>().sizeDelta = Vector2.one * IconSize;
-        icon.GetComponent<Image>().sprite = iconSprite;
-        icon.GetComponent<Image>().preserveAspect = true;
-        icon.GetComponent<Button>().onClick.AddListener(() => DisplayInfo(
-            glyphName, iconSprite,
-            ConfigManager.Instance.GetDescription(glyphName)
-        ));
-
-        icon.transform.SetParent(container.transform);
-    }
-
-    private void DisplayInfo(string glyphName, Sprite icon, string glyphDescription)
+    private void DisplayGlyphInfo(string glyphName)
     {
         _nameInfo.text = glyphName;
-        _iconInfo.sprite = icon;
-        _descriptionInfo.text = glyphDescription;
+        _iconInfo.sprite = ConfigManager.Instance.GetIcon(glyphName);
+        _descriptionInfo.text = ConfigManager.Instance.GetDescription(glyphName);
+    }
+
+    private void AddIconToCatalogue(Transform container, string glyphName)
+    {
+        GameObject icon = IconFactory.CatalogueIcon(glyphName, _iconPrefab, OnCatalogueIconClicked);
+        icon.transform.SetParent(container);
+    }
+
+    private void AddGlyphToSpell(string glyphName)
+    {
+        GameObject icon = IconFactory.SpellIcon(glyphName, _iconPrefab, OnSpellIconClicked);
+        icon.transform.SetParent(_spellContainer);
+        _currentSpell.Add(glyphName);
+    }
+
+    private void RemoveGlyphFromSpell(GameObject glyphIcon)
+    {
+        UnityEngine.Object.Destroy(glyphIcon);
+        _currentSpell.Remove(glyphIcon.name.Split("Icon")[0]);
+    }
+
+    private void OnCatalogueIconClicked(PointerEventData eventData)
+    {
+        string glyphName = eventData.pointerEnter.name.Split("Icon")[0];
+        DisplayGlyphInfo(glyphName);
+
+        if (eventData.button == PointerEventData.InputButton.Right)
+            AddGlyphToSpell(glyphName);
+    }
+
+    private void OnSpellIconClicked(PointerEventData eventData)
+    {
+        string glyphName = eventData.pointerEnter.name.Split("Icon")[0];
+
+        switch (eventData.button)
+        {
+            case PointerEventData.InputButton.Left:
+                DisplayGlyphInfo(glyphName);
+                break;
+            case PointerEventData.InputButton.Right:
+                RemoveGlyphFromSpell(eventData.pointerEnter);
+                break;
+        }
+    }
+}
+
+static class IconFactory
+{
+    public static GameObject CatalogueIcon(string glyphName, GameObject iconPrefab, Action<PointerEventData> callback)
+    {
+        GameObject icon = CreateIcon(glyphName, iconPrefab);
+        AttachEventListener(icon, IconMode.Catalogue, callback);
+
+        return icon;
+    }
+
+    public static GameObject SpellIcon(string glyphName, GameObject iconPrefab, Action<PointerEventData> callback)
+    {
+        GameObject icon = CreateIcon(glyphName, iconPrefab);
+        AttachEventListener(icon, IconMode.Spell, callback);
+
+        return icon;
+    }
+
+    private static GameObject CreateIcon(string glyphName, GameObject iconPrefab)
+    {
+        GameObject icon = UnityEngine.Object.Instantiate(iconPrefab);
+        icon.name = $"{glyphName}Icon";
+        icon.GetComponent<Image>().sprite = ConfigManager.Instance.GetIcon(glyphName);
+
+        return icon;
+    }
+
+    private static void AttachEventListener(GameObject icon, IconMode mode, Action<PointerEventData> callback)
+    {
+        EventTrigger.Entry entry = new()
+        {
+            eventID = EventTriggerType.PointerClick,
+        };
+
+        entry.callback.AddListener((data) => callback(data as PointerEventData));
+        icon.GetComponent<EventTrigger>().triggers.Add(entry);
+    }
+
+    private enum IconMode
+    {
+        Catalogue,
+        Spell
     }
 }
