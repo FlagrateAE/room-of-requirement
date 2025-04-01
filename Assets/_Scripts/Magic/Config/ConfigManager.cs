@@ -39,6 +39,8 @@ public class ConfigManager : MonoBehaviour
         };
     }
 
+    public bool IsCompatible(string modifierName, string glyphName) => _modifierConfig.IsCompatible(modifierName, glyphName);
+
     private BaseConfig GetConfig(string glyphName)
     {
         if (_formConfig.GlyphExists(glyphName)) return _formConfig;

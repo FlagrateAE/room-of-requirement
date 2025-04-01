@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Reflection;
 using System.Collections.Generic;
 
-public class BaseConfig : ScriptableObject
+public abstract class BaseConfig : ScriptableObject
 {
     /// <summary>
     /// Searches for a field with the given type and name that contains the given field name.
@@ -15,8 +15,9 @@ public class BaseConfig : ScriptableObject
         FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
         foreach (FieldInfo field in fields)
         {
-            if (field.FieldType == typeof(T) && field.Name.Contains(fieldName))
+            if (typeof(T).IsAssignableFrom(field.FieldType) && field.Name.Contains(fieldName))
             {
+                Debug.Log($"Found field {field.Name} with value {field.GetValue(this)}");
                 return (T)field.GetValue(this);
             }
         }
