@@ -20,9 +20,9 @@ public class SpellBookUI : MonoBehaviour
     private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
-    private TextMeshProUGUI _incompatibleWarning;
+    private TextMeshProUGUI _invalidSpellWarning;
 
-    private readonly List<string> _currentSpell = new();
+    private readonly List<string> _currentSpellRaw = new();
 
     private void Start()
     {
@@ -36,7 +36,7 @@ public class SpellBookUI : MonoBehaviour
         _descriptionInfo = infoContainer.Find("Description").GetComponent<TextMeshProUGUI>();
 
         _spellContainer = transform.Find("Spell");
-        _incompatibleWarning = transform.Find("IncompatibleWarning").GetComponent<TextMeshProUGUI>();
+        _invalidSpellWarning = transform.Find("InvalidSpellWarning").GetComponent<TextMeshProUGUI>();
 
         foreach (var formIcon in ConfigManager.Instance.GetIcons(GlyphType.Form))
         {
@@ -76,27 +76,20 @@ public class SpellBookUI : MonoBehaviour
     {
         GameObject icon = IconFactory.SpellIcon(glyphName, _iconPrefab, OnSpellIconClicked);
         icon.transform.SetParent(_spellContainer);
+        _currentSpellRaw.Add(glyphName);
 
-        foreach (string glyph in _currentSpell)
+        if (!SpellValidator.IsVaild(_currentSpellRaw, out string invalidReason))
         {
-            if (!ConfigManager.Instance.IsCompatible(glyph, glyphName))
-            {
-                _incompatibleWarning.text = $"{glyphName} is not compatible with {glyph}";
-                _incompatibleWarning.enabled = true;
-                return;
-            }
+            _invalidSpellWarning.text = invalidReason;
         }
-
-        _currentSpell.Add(glyphName);
     }
 
     private void RemoveGlyphFromSpell(GameObject glyphIcon)
     {
         Destroy(glyphIcon);
-        _currentSpell.Remove(glyphIcon.name.Split("Icon")[0]);
+        _currentSpellRaw.Remove(glyphIcon.name.Split("Icon")[0]);
 
-        if (_incompatibleWarning.enabled)
-            _incompatibleWarning.enabled = false;
+        _invalidSpellWarning.text = "";
     }
 
     private void OnCatalogueIconClicked(PointerEventData eventData)
@@ -165,6 +158,68 @@ public class SpellBookUI : MonoBehaviour
         {
             Catalogue,
             Spell
+        }
+    }
+
+    private static class SpellValidator
+    {
+        public static bool IsVaild(List<string> spell, out string invalidReason)
+        {
+            return IsBareMinimal(spell, out invalidReason) &&
+            IsOrderedCorrectly(spell, out invalidReason) &&
+            IsCompatible(spell, out invalidReason);
+        }
+
+        private static bool IsCompatible(List<string> spell, out string invalidReason)
+        {
+            string last = spell.Last();
+
+            foreach (string glyph in spell)
+            {
+                if (!ConfigManager.Instance.IsCompatible(glyph, last))
+                {
+                    invalidReason = $"{last} is not compatible with {glyph}";
+                    return false;
+                }
+            }
+
+            invalidReason = null;
+            return true;
+        }
+
+        private static bool IsBareMinimal(List<string> spell, out string invalidReason)
+        {
+            if (!(ConfigManager.Instance.GetGlyphType(spell[0]) == GlyphType.Form))
+            {
+                invalidReason = $"Spell must start with a form glyph ({spell[0]} is not the one).";
+                return false;
+            }
+            else if (!(ConfigManager.Instance.GetGlyphType(spell[1]) == GlyphType.Effect))
+            {
+                invalidReason = $"Second glyph of the spell must be an effect glyph ({spell[1]} is not the one).";
+                return false;
+            }
+
+            invalidReason = null;
+            return true;
+        }
+
+
+        private static bool IsOrderedCorrectly(List<string> spell, out string invalidReason)
+        {
+            foreach (string glyph in spell.Skip(2))
+            {
+                GlyphType glyphType = ConfigManager.Instance.GetGlyphType(glyph);
+
+                if (!(glyphType == GlyphType.Modifier))
+                {
+                    invalidReason = $"Only modifiers can be placed after effect glyphs. {glyph} is not a modifier.";
+                    return false;
+                }
+            }
+
+            invalidReason = null;
+            return true;
         }
     }
 }

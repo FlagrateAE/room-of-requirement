@@ -1094,7 +1094,7 @@ GameObject:
   - component: {fileID: 582084721}
   - component: {fileID: 582084720}
   m_Layer: 0
-  m_Name: IncompatibleWarning
+  m_Name: InvalidSpellWarning
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,8 +1148,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278195711
-  m_fontColor: {r: 1, g: 0.0806483, b: 0, a: 1}
+    rgba: 4278194639
+  m_fontColor: {r: 0.8113208, g: 0.06681465, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

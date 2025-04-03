@@ -41,6 +41,14 @@ public class ConfigManager : MonoBehaviour
 
     public bool IsCompatible(string modifierName, string glyphName) => _modifierConfig.IsCompatible(modifierName, glyphName);
 
+    public GlyphType GetGlyphType(string glyphName){
+        if (_formConfig.GlyphExists(glyphName)) return GlyphType.Form;
+        if (_effectConfig.GlyphExists(glyphName)) return GlyphType.Effect;
+        if (_modifierConfig.GlyphExists(glyphName)) return GlyphType.Modifier;
+
+        throw new Exception($"Glyph {glyphName} does not exist.");
+    }
+
     private BaseConfig GetConfig(string glyphName)
     {
         if (_formConfig.GlyphExists(glyphName)) return _formConfig;
