@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7769ed263c1f1184d833a7b8978d0e51
+guid: 13f873eeff3fdc8409fe3ef12c88de24
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -9,7 +9,7 @@ TrueTypeFontImporter:
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Beyond Wonderland
+  - Wizzta
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
