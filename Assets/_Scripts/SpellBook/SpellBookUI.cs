@@ -69,13 +69,13 @@ public class SpellBookUI : MonoBehaviour
     private void AddIconToCatalogue(Transform container, string glyphName)
     {
         GameObject icon = IconFactory.CatalogueIcon(glyphName, _iconPrefab, OnCatalogueIconClicked);
-        icon.transform.SetParent(container);
+        icon.transform.SetParent(container, false);
     }
 
     private void AddGlyphToSpell(string glyphName)
     {
         GameObject icon = IconFactory.SpellIcon(glyphName, _iconPrefab, OnSpellIconClicked);
-        icon.transform.SetParent(_spellContainer);
+        icon.transform.SetParent(_spellContainer, false);
         _currentSpellRaw.Add(glyphName);
 
         if (!SpellValidator.IsVaild(_currentSpellRaw, out string invalidReason))
