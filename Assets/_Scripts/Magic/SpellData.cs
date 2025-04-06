@@ -7,14 +7,14 @@ using UnityEngine;
 [Serializable]
 public class SpellData
 {
-    public readonly SpellForm Form;
+    public readonly Forms Form;
     public readonly Type Controller;
     public readonly Color Color;
     public float Power { get; private set; }
     public float FlightSpeed { get; private set; } = 10f;
 
 
-    public SpellData(SpellForm form, Type controller, Color color, float power)
+    public SpellData(Forms form, Type controller, Color color, float power)
     {
         Form = form;
         Controller = controller;

@@ -2,8 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 
-public enum GlyphType { Form, Effect, Modifier }
-
 public class ConfigManager : MonoBehaviour
 {
     public static ConfigManager Instance { get; private set; }

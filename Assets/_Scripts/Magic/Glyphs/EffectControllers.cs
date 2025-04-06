@@ -3,7 +3,7 @@ using UnityEngine;
 public abstract class EffectController : MonoBehaviour
 {
     protected float _power;
-    protected SpellForm _form;
+    protected Forms _form;
 
     public void Initialize(SpellData spell)
     {

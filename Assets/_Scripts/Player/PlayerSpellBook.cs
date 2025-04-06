@@ -28,22 +28,22 @@ public class PlayerSpellBook : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             Debug.Log("Creating Launch with no mods");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch");
+            _spellCast.CurrentSpell = CreateSpell(Forms.Projectile, "Launch");
         }
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
             Debug.Log("Creating Launch with 1 Amplify");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch", new string[] { "Amplify" });
+            _spellCast.CurrentSpell = CreateSpell(Forms.Projectile, "Launch", new string[] { "Amplify" });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             Debug.Log("Creating Launch with 3 Decelerate");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch", new string[] { "Decelerate", "Decelerate", "Decelerate" });
+            _spellCast.CurrentSpell = CreateSpell(Forms.Projectile, "Launch", new string[] { "Decelerate", "Decelerate", "Decelerate" });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha4))
         {
             Debug.Log("Creating Enlarge with no mods");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Enlarge");
+            _spellCast.CurrentSpell = CreateSpell(Forms.Projectile, "Enlarge");
         }
 
         if (Input.GetKeyUp(KeyCode.E))
@@ -62,7 +62,7 @@ public class PlayerSpellBook : MonoBehaviour
     /// <param name="effectName">The name of the effect to apply to the spell.</param>
     /// <param name="modifiersNames">Optional array of modifier names to register with the spell.</param>
     /// <returns>A new instance of <see cref="SpellData"/> configured with the specified parameters.</returns>
-    private SpellData CreateSpell(SpellForm form, string effectName, string[] modifiersNames = null)
+    private SpellData CreateSpell(Forms form, string effectName, string[] modifiersNames = null)
     {
         Type controller = Type.GetType($"{effectName}Controller");
         SpellData result = new(

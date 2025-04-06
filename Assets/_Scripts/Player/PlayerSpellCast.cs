@@ -33,7 +33,7 @@ public class PlayerSpellCast : MonoBehaviour
     {
         switch (spellData.Form)
         {
-            case SpellForm.Projectile:
+            case Forms.Projectile:
                 GameObject spellInstance = Instantiate(_spellPrefab, _playerCamera.position, _playerCamera.rotation);
 
                 SpellProjectile spellComponent = spellInstance.GetComponent<SpellProjectile>();
