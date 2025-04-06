@@ -17,7 +17,6 @@ public abstract class BaseConfig : ScriptableObject
         {
             if (typeof(T).IsAssignableFrom(field.FieldType) && field.Name.Contains(fieldName))
             {
-                Debug.Log($"Found field {field.Name} with value {field.GetValue(this)}");
                 return (T)field.GetValue(this);
             }
         }
