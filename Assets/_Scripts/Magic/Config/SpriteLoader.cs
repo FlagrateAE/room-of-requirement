@@ -11,13 +11,9 @@ public class SpriteLoader
 
     public SpriteLoader(string spriteFolder)
     {
-        Debug.Log("SpriteLoader started");
-
         _formIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "forms"));
         _effectIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "effects"));
         _modifierIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "modifiers"));
-
-        return;
     }
 
     private Sprite[] LoadSpriteSheet(string spriteStyleSheetPath)

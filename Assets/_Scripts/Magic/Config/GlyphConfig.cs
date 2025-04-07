@@ -7,10 +7,9 @@ using System.Linq;
 
 public class GlyphConfig
 {
-    private readonly Dictionary<Enum, Glyph> _glyphs;
-    private readonly SpriteLoader _iconLoader;
+    private Dictionary<Enum, Glyph> _glyphs;
+    private SpriteLoader _iconLoader;
 
-    [Inject]
     public GlyphConfig(SpriteLoader iconLoader)
     {
         _iconLoader = iconLoader;
@@ -32,13 +31,11 @@ public class GlyphConfig
             Description = "Sends the object high up in the air",
             Power = 10f,
             Color = Color.white,
-            Controller = typeof(LaunchController)
         }},
         { Effect.Enlarge, new EffectGlyph(){
             Description = "Makes object larger. There is a size limit",
             Power = 1.5f,
             Color = Color.red,
-            Controller = typeof(EnlargeController)
         } },
 
         // MODIFIERS
@@ -50,14 +47,16 @@ public class GlyphConfig
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
             Factor = 1.5f,
-            Compatibles = {Form.Projectile}
+            Compatibles = new(){Form.Projectile}
         }},
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
             Factor = 1.5f,
-            Compatibles = {Form.Projectile}
-        }} };
+            Compatibles = new(){Form.Projectile}
+        }}
+        };
     }
+
     public Form[] GetAllForms() => _glyphs.Keys.OfType<Form>().ToArray();
     public Effect[] GetAllEffects() => _glyphs.Keys.OfType<Effect>().ToArray();
     public Modifier[] GetAllModifiers() => _glyphs.Keys.OfType<Modifier>().ToArray();
@@ -81,7 +80,7 @@ public class GlyphConfig
         {
             if (typeof(T).IsAssignableFrom(field.FieldType))
             {
-                return (T)field.GetValue(this);
+                return (T)field.GetValue(found);
             }
         }
 

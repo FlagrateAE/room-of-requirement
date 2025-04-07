@@ -27,6 +27,7 @@ public class SpellBookUI : MonoBehaviour
 
     private readonly List<Enum> _currentSpellRaw = new();
 
+    [Inject]
     public void Initialize(GlyphConfig config) => _config = config;
 
     private void Start()
