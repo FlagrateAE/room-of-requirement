@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -23,9 +24,9 @@ public class SpellData
     }
 
     [Inject]
-    public void RegisterModifiers(Modifier[] modifiersNames, GlyphConfig config = null)
+    public void RegisterModifiers(List<Modifier> modifiers, GlyphConfig config)
     {
-        foreach (var modifier in modifiersNames)
+        foreach (var modifier in modifiers)
         {
             switch (modifier)
             {

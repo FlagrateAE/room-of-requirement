@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using Zenject;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerSpellCast), typeof(PlayerCamera), typeof(PlayerMovement))]
 public class PlayerSpellBook : MonoBehaviour
@@ -38,12 +39,12 @@ public class PlayerSpellBook : MonoBehaviour
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
             Debug.Log("Creating Launch with 1 Amplify");
-            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new Modifier[] { Modifier.Amplify });
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new() { Modifier.Amplify });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             Debug.Log("Creating Launch with 3 Decelerate");
-            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new Modifier[] { Modifier.Decelerate, Modifier.Decelerate, Modifier.Decelerate });
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new() { Modifier.Decelerate, Modifier.Decelerate, Modifier.Decelerate });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha4))
         {
@@ -67,7 +68,7 @@ public class PlayerSpellBook : MonoBehaviour
     /// <param name="effectName">The name of the effect to apply to the spell.</param>
     /// <param name="modifiersNames">Optional array of modifier names to register with the spell.</param>
     /// <returns>A new instance of <see cref="SpellData"/> configured with the specified parameters.</returns>
-    private SpellData CreateSpell(Form form, Effect effect, Modifier[] modifiers = null)
+    private SpellData CreateSpell(Form form, Effect effect, List<Modifier> modifiers = null)
     {
         SpellData result = new(
             form,
@@ -77,7 +78,7 @@ public class PlayerSpellBook : MonoBehaviour
         );
 
         if (modifiers != null)
-            result.RegisterModifiers(modifiers);
+            result.RegisterModifiers(modifiers, _config);
 
         return result;
     }
