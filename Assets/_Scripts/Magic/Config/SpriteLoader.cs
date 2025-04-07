@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using UnityEngine;
+using Zenject;
 
 public class SpriteLoader
 {
@@ -10,9 +11,13 @@ public class SpriteLoader
 
     public SpriteLoader(string spriteFolder)
     {
-        _formIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "FormIcons"));
-        _effectIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "EffectIcons"));
-        _modifierIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "ModifierIcons"));
+        Debug.Log("SpriteLoader started");
+
+        _formIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "forms"));
+        _effectIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "effects"));
+        _modifierIcons = LoadSpriteSheet(Path.Combine(spriteFolder, "modifiers"));
+
+        return;
     }
 
     private Sprite[] LoadSpriteSheet(string spriteStyleSheetPath)
@@ -20,7 +25,7 @@ public class SpriteLoader
         Sprite[] sprites = Resources.LoadAll<Sprite>(spriteStyleSheetPath);
 
         if (sprites.Length == 0)
-            throw new System.Exception($"No sprites found in {spriteStyleSheetPath}");
+            Debug.LogWarning($"No sprites found in {spriteStyleSheetPath}");
 
         return sprites;
     }
