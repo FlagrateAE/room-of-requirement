@@ -5,10 +5,13 @@ using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
 using System.Linq;
+using Zenject;
 
 [RequireComponent(typeof(Canvas))]
 public class SpellBookUI : MonoBehaviour
 {
+    private GlyphConfig _config;
+
     [SerializeField]
     private GameObject _iconPrefab;
 
@@ -22,7 +25,9 @@ public class SpellBookUI : MonoBehaviour
     private TextMeshProUGUI _descriptionInfo;
     private TextMeshProUGUI _invalidSpellWarning;
 
-    private readonly List<string> _currentSpellRaw = new();
+    private readonly List<Enum> _currentSpellRaw = new();
+
+    public void Initialize(GlyphConfig config) => _config = config;
 
     private void Start()
     {
@@ -38,20 +43,20 @@ public class SpellBookUI : MonoBehaviour
         _spellContainer = transform.Find("Spell");
         _invalidSpellWarning = transform.Find("InvalidSpellWarning").GetComponent<TextMeshProUGUI>();
 
-        foreach (var formIcon in ConfigManager.Instance.GetIcons(GlyphType.Form))
+        foreach (var form in _config.GetAllForms())
         {
-            AddIconToCatalogue(_formsContainer, formIcon.name);
+            AddIconToCatalogue(_formsContainer, form);
         }
-        foreach (var effectIcon in ConfigManager.Instance.GetIcons(GlyphType.Effect))
+        foreach (var effect in _config.GetAllEffects())
         {
-            AddIconToCatalogue(_effectsContainer, effectIcon.name);
+            AddIconToCatalogue(_effectsContainer, effect);
         }
-        foreach (var modifierIcon in ConfigManager.Instance.GetIcons(GlyphType.Modifier))
+        foreach (var modifier in _config.GetAllModifiers())
         {
-            AddIconToCatalogue(_modifiersContainer, modifierIcon.name);
+            AddIconToCatalogue(_modifiersContainer, modifier);
         }
 
-        DisplayGlyphInfo("Self");
+        DisplayGlyphInfo(Form.Self);
     }
 
     private Transform GetContainer(string glyphType)
@@ -59,56 +64,49 @@ public class SpellBookUI : MonoBehaviour
         return transform.Find(glyphType).GetComponentInChildren<HorizontalLayoutGroup>().transform;
     }
 
-    private void DisplayGlyphInfo(string glyphName)
+    private void DisplayGlyphInfo(Enum glyph)
     {
-        _nameInfo.text = glyphName;
-        _iconInfo.sprite = ConfigManager.Instance.GetIcon(glyphName);
-        _descriptionInfo.text = ConfigManager.Instance.GetDescription(glyphName);
+        _nameInfo.text = glyph.ToString();
+        _iconInfo.sprite = _config.GetIcon(glyph);
+        _descriptionInfo.text = _config.GetDescription(glyph);
     }
 
-    private void AddIconToCatalogue(Transform container, string glyphName)
+    private void AddIconToCatalogue(Transform container, Enum glyph)
     {
-        GameObject icon = IconFactory.CatalogueIcon(glyphName, _iconPrefab, OnCatalogueIconClicked);
+        GameObject icon = IconFactory.CatalogueIcon(glyph, _iconPrefab, _config.GetIcon(glyph), OnCatalogueIconClicked);
         icon.transform.SetParent(container, false);
     }
 
-    private void AddGlyphToSpell(string glyphName)
+    private void AddGlyphToSpell(Enum glyph)
     {
-        GameObject icon = IconFactory.SpellIcon(glyphName, _iconPrefab, OnSpellIconClicked);
+        GameObject icon = IconFactory.SpellIcon(glyph, _iconPrefab, _config.GetIcon(glyph), OnSpellIconClicked);
         icon.transform.SetParent(_spellContainer, false);
-        _currentSpellRaw.Add(glyphName);
-
-        if (!SpellValidator.IsVaild(_currentSpellRaw, out string invalidReason))
-        {
-            _invalidSpellWarning.text = invalidReason;
-        }
+        _currentSpellRaw.Add(glyph);
     }
 
     private void RemoveGlyphFromSpell(GameObject glyphIcon)
     {
+        _currentSpellRaw.Remove(Glyph.FromIcon(glyphIcon));
         Destroy(glyphIcon);
-        _currentSpellRaw.Remove(glyphIcon.name.Split("Icon")[0]);
-
-        _invalidSpellWarning.text = "";
     }
 
     private void OnCatalogueIconClicked(PointerEventData eventData)
     {
-        string glyphName = eventData.pointerEnter.name.Split("Icon")[0];
-        DisplayGlyphInfo(glyphName);
+        Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
+        DisplayGlyphInfo(glyph);
 
         if (eventData.button == PointerEventData.InputButton.Right)
-            AddGlyphToSpell(glyphName);
+            AddGlyphToSpell(glyph);
     }
 
     private void OnSpellIconClicked(PointerEventData eventData)
     {
-        string glyphName = eventData.pointerEnter.name.Split("Icon")[0];
+        Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
 
         switch (eventData.button)
         {
             case PointerEventData.InputButton.Left:
-                DisplayGlyphInfo(glyphName);
+                DisplayGlyphInfo(glyph);
                 break;
             case PointerEventData.InputButton.Right:
                 RemoveGlyphFromSpell(eventData.pointerEnter);
@@ -118,27 +116,28 @@ public class SpellBookUI : MonoBehaviour
 
     private static class IconFactory
     {
-        public static GameObject CatalogueIcon(string glyphName, GameObject iconPrefab, Action<PointerEventData> callback)
+        public static GameObject CatalogueIcon(Enum glyph, GameObject iconPrefab, Sprite sprite, Action<PointerEventData> callback)
         {
-            GameObject icon = CreateIcon(glyphName, iconPrefab);
+            GameObject icon = CreateIcon(Glyph.Name(glyph), iconPrefab, sprite);
             AttachEventListener(icon, IconMode.Catalogue, callback);
 
             return icon;
         }
 
-        public static GameObject SpellIcon(string glyphName, GameObject iconPrefab, Action<PointerEventData> callback)
+        public static GameObject SpellIcon(Enum glyph, GameObject iconPrefab, Sprite sprite, Action<PointerEventData> callback)
         {
-            GameObject icon = CreateIcon(glyphName, iconPrefab);
+            GameObject icon = CreateIcon(Glyph.Name(glyph), iconPrefab, sprite);
             AttachEventListener(icon, IconMode.Spell, callback);
 
             return icon;
         }
 
-        private static GameObject CreateIcon(string glyphName, GameObject iconPrefab)
+        [Inject]
+        private static GameObject CreateIcon(string glyphName, GameObject iconPrefab, Sprite sprite)
         {
-            GameObject icon = UnityEngine.Object.Instantiate(iconPrefab);
+            GameObject icon = Instantiate(iconPrefab);
             icon.name = $"{glyphName}Icon";
-            icon.GetComponent<Image>().sprite = ConfigManager.Instance.GetIcon(glyphName);
+            icon.GetComponent<Image>().sprite = sprite;
 
             return icon;
         }
@@ -158,68 +157,6 @@ public class SpellBookUI : MonoBehaviour
         {
             Catalogue,
             Spell
-        }
-    }
-
-    private static class SpellValidator
-    {
-        public static bool IsVaild(List<string> spell, out string invalidReason)
-        {
-            return IsBareMinimal(spell, out invalidReason) &&
-            IsOrderedCorrectly(spell, out invalidReason) &&
-            IsCompatible(spell, out invalidReason);
-        }
-
-        private static bool IsCompatible(List<string> spell, out string invalidReason)
-        {
-            string last = spell.Last();
-
-            foreach (string glyph in spell)
-            {
-                if (!ConfigManager.Instance.IsCompatible(glyph, last))
-                {
-                    invalidReason = $"{last} is not compatible with {glyph}";
-                    return false;
-                }
-            }
-
-            invalidReason = null;
-            return true;
-        }
-
-        private static bool IsBareMinimal(List<string> spell, out string invalidReason)
-        {
-            if (!(ConfigManager.Instance.GetGlyphType(spell[0]) == GlyphType.Form))
-            {
-                invalidReason = $"Spell must start with a form glyph ({spell[0]} is not the one).";
-                return false;
-            }
-            else if (!(ConfigManager.Instance.GetGlyphType(spell[1]) == GlyphType.Effect))
-            {
-                invalidReason = $"Second glyph of the spell must be an effect glyph ({spell[1]} is not the one).";
-                return false;
-            }
-
-            invalidReason = null;
-            return true;
-        }
-
-
-        private static bool IsOrderedCorrectly(List<string> spell, out string invalidReason)
-        {
-            foreach (string glyph in spell.Skip(2))
-            {
-                GlyphType glyphType = ConfigManager.Instance.GetGlyphType(glyph);
-
-                if (!(glyphType == GlyphType.Modifier))
-                {
-                    invalidReason = $"Only modifiers can be placed after effect glyphs. {glyph} is not a modifier.";
-                    return false;
-                }
-            }
-
-            invalidReason = null;
-            return true;
         }
     }
 }

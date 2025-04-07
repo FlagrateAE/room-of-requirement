@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 
@@ -24,7 +25,19 @@ public class SpriteLoader
         return sprites;
     }
 
-    public Sprite GetIcon(Form form) => _formIcons[(int)form];
-    public Sprite GetIcon(Effect effect) => _effectIcons[(int)effect];
-    public Sprite GetIcon(Modifier modifier) => _modifierIcons[(int)modifier];
+    public Sprite GetIcon(Enum glyph) => glyph switch
+    {
+        Form form => _formIcons[(int)form],
+        Effect effect => _effectIcons[(int)effect],
+        Modifier modifier => _modifierIcons[(int)modifier],
+        _ => null,
+    };
+
+    public Sprite[] GetIcons(GlyphType glyphType) => glyphType switch
+    {
+        GlyphType.Form => _formIcons,
+        GlyphType.Effect => _effectIcons,
+        GlyphType.Modifier => _modifierIcons,
+        _ => null,
+    };
 }

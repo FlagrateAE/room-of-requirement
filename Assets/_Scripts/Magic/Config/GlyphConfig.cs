@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Zenject;
 using System;
 using System.Reflection;
+using System.Linq;
 
 public class GlyphConfig
 {
@@ -57,11 +58,12 @@ public class GlyphConfig
             Compatibles = {Form.Projectile}
         }} };
     }
+    public Form[] GetAllForms() => _glyphs.Keys.OfType<Form>().ToArray();
+    public Effect[] GetAllEffects() => _glyphs.Keys.OfType<Effect>().ToArray();
+    public Modifier[] GetAllModifiers() => _glyphs.Keys.OfType<Modifier>().ToArray();
 
     public string GetDescription(Enum glyph) => GetValue<string>(glyph);
-    public Sprite GetIcon(Form form) => _iconLoader.GetIcon(form);
-    public Sprite GetIcon(Effect effect) => _iconLoader.GetIcon(effect);
-    public Sprite GetIcon(Modifier modifier) => _iconLoader.GetIcon(modifier);
+    public Sprite GetIcon(Enum glyph) => _iconLoader.GetIcon(glyph);
 
     public float GetPower(Effect effect) => GetValue<float>(effect);
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
