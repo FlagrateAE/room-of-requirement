@@ -7,66 +7,66 @@ using System.Reflection;
 public class GlyphConfig
 {
     private readonly Dictionary<Enum, Glyph> _glyphs;
-
+    private readonly SpriteLoader _iconLoader;
 
     [Inject]
     public GlyphConfig(SpriteLoader iconLoader)
     {
+        _iconLoader = iconLoader;
         _glyphs = new(){
 
         // FORMS
         { Form.Self, new FormGlyph(){
             Description = "Applies the spell efect to the caster himself",
-            Icon = iconLoader.GetIcon(Form.Self)
         } },
         { Form.Projectile, new FormGlyph(){
             Description = "Sends a magic projectile that applies the spell effect to the target (first thing it hits)",
-            Icon = iconLoader.GetIcon(Form.Projectile)
         } },
         { Form.MagicSphere, new FormGlyph(){
             Description = "Creates a magic sphere that applies the spell effect to all things inside it",
-            Icon = iconLoader.GetIcon(Form.MagicSphere)
         } },
 
         // EFFECTS
         { Effect.Launch, new EffectGlyph(){
             Description = "Sends the object high up in the air",
-            Icon = iconLoader.GetIcon(Effect.Launch),
             Power = 10f,
-            Color = Color.white
+            Color = Color.white,
+            Controller = typeof(LaunchController)
         }},
         { Effect.Enlarge, new EffectGlyph(){
             Description = "Makes object larger. There is a size limit",
-            Icon = iconLoader.GetIcon(Effect.Enlarge),
             Power = 1.5f,
-            Color = Color.red
+            Color = Color.red,
+            Controller = typeof(EnlargeController)
         } },
 
         // MODIFIERS
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
-            Icon = iconLoader.GetIcon(Modifier.Amplify),
             Factor = 1.5f,
             Compatibles = {}
         } },
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
-            Icon = iconLoader.GetIcon(Modifier.Accelerate),
             Factor = 1.5f,
             Compatibles = {Form.Projectile}
         }},
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
-            Icon = iconLoader.GetIcon(Modifier.Decelerate),
             Factor = 1.5f,
             Compatibles = {Form.Projectile}
         }} };
     }
 
     public string GetDescription(Enum glyph) => GetValue<string>(glyph);
-    public Sprite GetIcon(Enum glyph) => GetValue<Sprite>(glyph);
+    public Sprite GetIcon(Form form) => _iconLoader.GetIcon(form);
+    public Sprite GetIcon(Effect effect) => _iconLoader.GetIcon(effect);
+    public Sprite GetIcon(Modifier modifier) => _iconLoader.GetIcon(modifier);
+
     public float GetPower(Effect effect) => GetValue<float>(effect);
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
+    public Type GetController(Effect effect) => Type.GetType($"{effect}Controller");
+
     public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
 
