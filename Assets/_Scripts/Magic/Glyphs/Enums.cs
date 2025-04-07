@@ -5,21 +5,21 @@ public enum GlyphType
     Modifier
 }
 
-public enum Forms
+public enum Form
 {
     Self,
     Projectile,
     MagicSphere
 }
 
-public enum Effects
+public enum Effect
 {
     Launch,
     Enlarge,
     Reduce,
 }
 
-public enum Modifiers
+public enum Modifier
 {
     Amplify,
     Accelerate,

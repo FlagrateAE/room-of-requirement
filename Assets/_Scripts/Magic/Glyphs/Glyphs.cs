@@ -1,26 +1,26 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
 
 public abstract class Glyph
 {
-    public readonly string Name;
+    public string Description;
     public Sprite Icon;
-    public readonly string Description;
 }
 
-public class Form : Glyph
+public class FormGlyph : Glyph
 {
-
 }
 
-public class Effect : Glyph
+public class EffectGlyph : Glyph
 {
     public Color Color;
-    public readonly float Power;
-    public readonly Type Controller;
+    public float Power;
+    public Type Controller;
 }
 
-public class Modifier : Glyph
+public class ModifierGlyph : Glyph
 {
-    public readonly float Factor;
+    public float Factor;
+    public List<Enum> Compatibles; // if empty, compatible with everything
 }
