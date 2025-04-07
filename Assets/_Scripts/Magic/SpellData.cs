@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 /// <summary>
 /// Represents a spell, including its form, controller type, power, and modifiers.
@@ -7,14 +9,13 @@ using UnityEngine;
 [Serializable]
 public class SpellData
 {
-    public readonly SpellForm Form;
+    public readonly Form Form;
     public readonly Type Controller;
     public readonly Color Color;
     public float Power { get; private set; }
     public float FlightSpeed { get; private set; } = 10f;
 
-
-    public SpellData(SpellForm form, Type controller, Color color, float power)
+    public SpellData(Form form, Type controller, Color color, float power)
     {
         Form = form;
         Controller = controller;
@@ -22,19 +23,20 @@ public class SpellData
         Power = power;
     }
 
-    public void RegisterModifiers(string[] modifiersNames)
+    [Inject]
+    public void RegisterModifiers(List<Modifier> modifiers, GlyphConfig config)
     {
-        foreach (var modifier in modifiersNames)
+        foreach (var modifier in modifiers)
         {
             switch (modifier)
             {
-                case "Amplify":
-                    Power *= ConfigManager.Instance.GetModifierFactor("Amplify");
+                case Modifier.Amplify:
+                    Power *= config.GetFactor(modifier);
                     break;
 
-                case "Accelerate":
-                case "Decelerate":
-                    FlightSpeed *= ConfigManager.Instance.GetModifierFactor(modifier);
+                case Modifier.Accelerate:
+                case Modifier.Decelerate:
+                    FlightSpeed *= config.GetFactor(modifier);
                     break;
             }
         }

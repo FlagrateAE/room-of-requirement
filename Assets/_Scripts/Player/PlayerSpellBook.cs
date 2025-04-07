@@ -1,10 +1,13 @@
 using UnityEngine;
 using System;
-using UnityEngine.PlayerLoop;
+using Zenject;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerSpellCast), typeof(PlayerCamera), typeof(PlayerMovement))]
 public class PlayerSpellBook : MonoBehaviour
 {
+    private GlyphConfig _config;
+
     private PlayerSpellCast _spellCast;
     private PlayerMovement _movement;
     private PlayerCamera _camera;
@@ -12,6 +15,9 @@ public class PlayerSpellBook : MonoBehaviour
     private Animator _bookAnimator;
 
     private bool _isOpen = false;
+
+    [Inject]
+    public void Initialize(GlyphConfig config) => _config = config;
 
     private void Start()
     {
@@ -28,22 +34,22 @@ public class PlayerSpellBook : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Alpha1))
         {
             Debug.Log("Creating Launch with no mods");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch");
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch);
         }
         else if (Input.GetKeyUp(KeyCode.Alpha2))
         {
             Debug.Log("Creating Launch with 1 Amplify");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch", new string[] { "Amplify" });
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new() { Modifier.Amplify });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha3))
         {
             Debug.Log("Creating Launch with 3 Decelerate");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Launch", new string[] { "Decelerate", "Decelerate", "Decelerate" });
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Launch, new() { Modifier.Decelerate, Modifier.Decelerate, Modifier.Decelerate });
         }
         else if (Input.GetKeyUp(KeyCode.Alpha4))
         {
             Debug.Log("Creating Enlarge with no mods");
-            _spellCast.CurrentSpell = CreateSpell(SpellForm.Projectile, "Enlarge");
+            _spellCast.CurrentSpell = CreateSpell(Form.Projectile, Effect.Enlarge);
         }
 
         if (Input.GetKeyUp(KeyCode.E))
@@ -62,18 +68,17 @@ public class PlayerSpellBook : MonoBehaviour
     /// <param name="effectName">The name of the effect to apply to the spell.</param>
     /// <param name="modifiersNames">Optional array of modifier names to register with the spell.</param>
     /// <returns>A new instance of <see cref="SpellData"/> configured with the specified parameters.</returns>
-    private SpellData CreateSpell(SpellForm form, string effectName, string[] modifiersNames = null)
+    private SpellData CreateSpell(Form form, Effect effect, List<Modifier> modifiers = null)
     {
-        Type controller = Type.GetType($"{effectName}Controller");
         SpellData result = new(
             form,
-            controller,
-            ConfigManager.Instance.GetEffectColor(effectName),
-            ConfigManager.Instance.GetEffectPower(effectName)
+            _config.GetController(effect),
+            _config.GetColor(effect),
+            _config.GetPower(effect)
         );
 
-        if (modifiersNames != null)
-            result.RegisterModifiers(modifiersNames);
+        if (modifiers != null)
+            result.RegisterModifiers(modifiers, _config);
 
         return result;
     }
