@@ -1,17 +1,20 @@
 using UnityEngine;
 using System.Collections.Generic;
 using Zenject;
+using System;
+using System.Reflection;
 
 public class GlyphConfig
 {
-    private readonly Dictionary<Form, FormGlyph> _forms;
-    private readonly Dictionary<Effect, EffectGlyph> _effects;
-    private readonly Dictionary<Modifier, ModifierGlyph> _modifiers;
+    private readonly Dictionary<Enum, Glyph> _glyphs;
+
 
     [Inject]
     public GlyphConfig(SpriteLoader iconLoader)
     {
-        _forms = new(){
+        _glyphs = new(){
+
+        // FORMS
         { Form.Self, new FormGlyph(){
             Description = "Applies the spell efect to the caster himself",
             Icon = iconLoader.GetIcon(Form.Self)
@@ -23,9 +26,9 @@ public class GlyphConfig
         { Form.MagicSphere, new FormGlyph(){
             Description = "Creates a magic sphere that applies the spell effect to all things inside it",
             Icon = iconLoader.GetIcon(Form.MagicSphere)
-        } } };
+        } },
 
-        _effects = new(){
+        // EFFECTS
         { Effect.Launch, new EffectGlyph(){
             Description = "Sends the object high up in the air",
             Icon = iconLoader.GetIcon(Effect.Launch),
@@ -37,9 +40,9 @@ public class GlyphConfig
             Icon = iconLoader.GetIcon(Effect.Enlarge),
             Power = 1.5f,
             Color = Color.red
-        } } };
+        } },
 
-        _modifiers = new(){
+        // MODIFIERS
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
             Icon = iconLoader.GetIcon(Modifier.Amplify),
@@ -58,5 +61,28 @@ public class GlyphConfig
             Factor = 1.5f,
             Compatibles = {Form.Projectile}
         }} };
+    }
+
+    public string GetDescription(Enum glyph) => GetValue<string>(glyph);
+    public Sprite GetIcon(Enum glyph) => GetValue<Sprite>(glyph);
+    public float GetPower(Effect effect) => GetValue<float>(effect);
+    public Color GetColor(Effect effect) => GetValue<Color>(effect);
+    public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
+    public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
+
+    private T GetValue<T>(Enum glyph)
+    {
+        Glyph found = _glyphs[glyph];
+
+        FieldInfo[] fields = found.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (FieldInfo field in fields)
+        {
+            if (typeof(T).IsAssignableFrom(field.FieldType))
+            {
+                return (T)field.GetValue(this);
+            }
+        }
+
+        return default;
     }
 }
