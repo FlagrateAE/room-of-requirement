@@ -11,6 +11,7 @@ using Zenject;
 public class SpellBookUI : MonoBehaviour
 {
     private GlyphConfig _config;
+    private IconManager _iconManager;
 
     [SerializeField]
     private GameObject _iconPrefab;
@@ -28,34 +29,17 @@ public class SpellBookUI : MonoBehaviour
     private readonly List<Enum> _currentSpellRaw = new();
 
     [Inject]
-    public void Initialize(GlyphConfig config) => _config = config;
+    public void Initialize(GlyphConfig config, IconManager iconManager)
+    {
+        _config = config;
+        _iconManager = iconManager;
+    }
 
     private void Start()
     {
-        _formsContainer = GetContainer("Forms");
-        _effectsContainer = GetContainer("Effects");
-        _modifiersContainer = GetContainer("Modifiers");
-
-        Transform infoContainer = transform.Find("Info");
-        _nameInfo = infoContainer.Find("Name").GetComponent<TextMeshProUGUI>();
-        _iconInfo = transform.GetComponentInChildren<Image>();
-        _descriptionInfo = infoContainer.Find("Description").GetComponent<TextMeshProUGUI>();
-
-        _spellContainer = transform.Find("Spell");
-        _invalidSpellWarning = transform.Find("InvalidSpellWarning").GetComponent<TextMeshProUGUI>();
-
-        foreach (var form in _config.GetAllForms())
-        {
-            AddIconToCatalogue(_formsContainer, form);
-        }
-        foreach (var effect in _config.GetAllEffects())
-        {
-            AddIconToCatalogue(_effectsContainer, effect);
-        }
-        foreach (var modifier in _config.GetAllModifiers())
-        {
-            AddIconToCatalogue(_modifiersContainer, modifier);
-        }
+        _nameInfo = transform.Find("Info").Find("Name").GetComponent<TextMeshProUGUI>();
+        _iconInfo = transform.Find("Info").GetComponentInChildren<Image>();
+        _descriptionInfo = transform.Find("Info").Find("Description").GetComponent<TextMeshProUGUI>();
 
         DisplayGlyphInfo(Form.Self);
     }

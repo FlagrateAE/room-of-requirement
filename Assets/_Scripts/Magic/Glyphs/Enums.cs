@@ -15,8 +15,7 @@ public enum Form
 public enum Effect
 {
     Launch,
-    Enlarge,
-    Reduce,
+    Enlarge
 }
 
 public enum Modifier
