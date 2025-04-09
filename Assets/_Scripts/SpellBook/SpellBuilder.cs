@@ -1,25 +1,36 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class SpellBuilder
 {
     public readonly List<Enum> Spell = new();
     private SpellBuildState _state = SpellBuildState.Form;
 
+    // Functional glyphs are Forms and Effects
+    public Enum LastFunctionalGlyph { get; private set; }
+
     public void Add(Enum glyph, out (bool, bool, bool) nextHighlights)
     {
         Spell.Add(glyph);
 
-        if (
-            _state == SpellBuildState.FormModifiersOrEffect &&
-            typeof(Effect).IsAssignableFrom(glyph.GetType())
-        )
-            _state = SpellBuildState.EffectModifiers;
-
-        else _state++;
+        switch (glyph)
+        {
+            case Form:
+                _state = SpellBuildState.FormModifiersOrEffect;
+                LastFunctionalGlyph = glyph;
+                break;
+            case Effect:
+                _state = SpellBuildState.EffectModifiers;
+                LastFunctionalGlyph = glyph;
+                break;
+            default:
+                break;
+        }
 
         nextHighlights = GetHighlights();
+        Debug.Log(nextHighlights);
     }
 
     public void ClearSpell(out (bool, bool, bool) nextHighlights)
@@ -30,7 +41,6 @@ public class SpellBuilder
         nextHighlights = GetHighlights();
     }
 
-    public Enum LastGlyph => Spell.Count > 0 ? Spell[^1] : null;
 
     private (bool, bool, bool) GetHighlights() => _state switch
     {

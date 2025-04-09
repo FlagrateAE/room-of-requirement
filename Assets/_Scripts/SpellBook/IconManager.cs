@@ -128,15 +128,9 @@ public class IconManager
         HighlightIcons(_forms, forms);
         HighlightIcons(_effects, effects);
 
-
+        HighlightIcons(_modifiers, false);
         if (modifiers)
-        {
-            // Debug.Log($"Filtering compatible modifiers for {Glyph.Name(lastGlyph)} : {FilterCompatibleModifiers(lastGlyph).Count}");
-            HighlightIcons(_modifiers, false);
             HighlightIcons(FilterCompatibleModifiers(lastGlyph), true);
-        }
-        else
-            HighlightIcons(_modifiers, false);
     }
 
     private void HighlightIcons(Dictionary<Enum, Image> icons, bool visible)

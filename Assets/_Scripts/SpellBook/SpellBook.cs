@@ -53,7 +53,7 @@ public class SpellBook : MonoBehaviour
         if (_iconManager.TryAddToSpell(catalogueIcon))
         {
             _spellBuilder.Add(Glyph.FromIcon(catalogueIcon), out var nextHighlights);
-            _iconManager.HighlightGlyphGroups(nextHighlights, _spellBuilder.LastGlyph);
+            _iconManager.HighlightGlyphGroups(nextHighlights, _spellBuilder.LastFunctionalGlyph);
         }
     }
 
