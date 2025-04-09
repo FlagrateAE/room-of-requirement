@@ -26,13 +26,24 @@ public class SpriteLoader
         return sprites;
     }
 
-    public Sprite GetIcon(Enum glyph) => glyph switch
+    public Sprite GetIcon(Enum glyph)
     {
-        Form form => _formIcons[(int)form],
-        Effect effect => _effectIcons[(int)effect],
-        Modifier modifier => _modifierIcons[(int)modifier],
-        _ => null,
-    };
+        try
+        {
+            return glyph switch
+            {
+                Form form => _formIcons[(int)form],
+                Effect effect => _effectIcons[(int)effect],
+                Modifier modifier => _modifierIcons[(int)modifier],
+                _ => null,
+            };
+        }
+        catch (IndexOutOfRangeException)
+        {
+            Debug.LogError($"No icon present for {glyph}. Please update the sprite sheet.");
+            return null;
+        }
+    }
 
     public Sprite[] GetIcons(GlyphType glyphType) => glyphType switch
     {

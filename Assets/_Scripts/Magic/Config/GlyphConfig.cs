@@ -1,14 +1,13 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Zenject;
 using System;
 using System.Reflection;
 using System.Linq;
 
 public class GlyphConfig
 {
-    private Dictionary<Enum, Glyph> _glyphs;
-    private SpriteLoader _iconLoader;
+    private readonly Dictionary<Enum, Glyph> _glyphs;
+    private readonly SpriteLoader _iconLoader;
 
     public GlyphConfig(SpriteLoader iconLoader)
     {
@@ -42,7 +41,7 @@ public class GlyphConfig
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
             Factor = 1.5f,
-            Compatibles = {}
+            Compatibles = new(){Effect.Launch, Effect.Enlarge}
         } },
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",

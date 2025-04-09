@@ -16,7 +16,7 @@ public abstract class Glyph
         return (Enum)Enum.Parse(glyphType, glyph);
     }
 
-    public static string Name(Enum glyph) => $"{glyph.GetType().Name}{glyph}";
+    public static string Name(Enum glyph) => $"{glyph.GetType().Name}.{glyph}";
 }
 
 public class FormGlyph : Glyph

@@ -9,6 +9,6 @@ public class MainInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.Bind<SpriteLoader>().FromMethod(_ => new SpriteLoader(_iconsFolder)).AsSingle().NonLazy();
-        Container.Bind<GlyphConfig>().FromNew().AsSingle().NonLazy();
+        Container.Bind<GlyphConfig>().AsSingle().NonLazy();
     }
 }
