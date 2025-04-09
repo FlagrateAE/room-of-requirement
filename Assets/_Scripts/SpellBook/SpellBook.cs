@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using System;
 using Zenject;
 
@@ -50,9 +48,10 @@ public class SpellBook : MonoBehaviour
 
     private void AddGlyphToSpell(GameObject catalogueIcon)
     {
-        if (_iconManager.TryAddToSpell(catalogueIcon))
+        if (
+            _iconManager.TryAddToSpell(catalogueIcon))
         {
-            _spellBuilder.Add(Glyph.FromIcon(catalogueIcon), out var nextHighlights);
+            _spellBuilder.TryAdd(Glyph.FromIcon(catalogueIcon), out var nextHighlights);
             _iconManager.HighlightGlyphGroups(nextHighlights, _spellBuilder.LastFunctionalGlyph);
         }
     }

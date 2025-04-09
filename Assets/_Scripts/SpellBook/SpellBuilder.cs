@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using System.Text;
 
 public class SpellBuilder
 {
@@ -11,8 +12,26 @@ public class SpellBuilder
     // Functional glyphs are Forms and Effects
     public Enum LastFunctionalGlyph { get; private set; }
 
-    public void Add(Enum glyph, out (bool, bool, bool) nextHighlights)
+    private void PrintSpell()
     {
+        StringBuilder sb = new();
+        foreach (Enum glyph in Spell)
+        {
+            sb.Append($"{glyph}, ");
+        }
+
+        Debug.Log(sb.ToString());
+    }
+
+    public void TryAdd(Enum glyph, out (bool, bool, bool) nextHighlights)
+    {
+        if (Spell.Count == 8)
+        {
+            _state = SpellBuildState.MaxLengthReached;
+            nextHighlights = GetHighlights();
+            return;
+        }
+
         Spell.Add(glyph);
 
         switch (glyph)
@@ -30,7 +49,6 @@ public class SpellBuilder
         }
 
         nextHighlights = GetHighlights();
-        Debug.Log(nextHighlights);
     }
 
     public void ClearSpell(out (bool, bool, bool) nextHighlights)
@@ -47,6 +65,7 @@ public class SpellBuilder
         SpellBuildState.Form => (true, false, false),
         SpellBuildState.FormModifiersOrEffect => (false, true, true),
         SpellBuildState.EffectModifiers => (false, false, true),
+        SpellBuildState.MaxLengthReached => (false, false, false),
         _ => (false, false, false),
     };
 
@@ -54,6 +73,7 @@ public class SpellBuilder
     {
         Form,
         FormModifiersOrEffect,
-        EffectModifiers
+        EffectModifiers,
+        MaxLengthReached
     }
 }
