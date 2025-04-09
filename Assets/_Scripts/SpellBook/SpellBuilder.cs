@@ -1,8 +1,5 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using System.Text;
 
 public class SpellBuilder
 {
@@ -11,17 +8,6 @@ public class SpellBuilder
 
     // Functional glyphs are Forms and Effects
     public Enum LastFunctionalGlyph { get; private set; }
-
-    private void PrintSpell()
-    {
-        StringBuilder sb = new();
-        foreach (Enum glyph in Spell)
-        {
-            sb.Append($"{glyph}, ");
-        }
-
-        Debug.Log(sb.ToString());
-    }
 
     public void TryAdd(Enum glyph, out (bool, bool, bool) nextHighlights)
     {

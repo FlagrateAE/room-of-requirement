@@ -17,6 +17,7 @@ public class SpellBook : MonoBehaviour
     private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
+    private GameObject _clearButton;
 
 
     [Inject]
@@ -34,6 +35,7 @@ public class SpellBook : MonoBehaviour
         _nameInfo = transform.Find("Info").Find("Name").GetComponent<TextMeshProUGUI>();
         _iconInfo = transform.Find("Info").GetComponentInChildren<Image>();
         _descriptionInfo = transform.Find("Info").Find("Description").GetComponent<TextMeshProUGUI>();
+        _clearButton = transform.Find("ClearSpell").gameObject;
 
         ClearSpell();
         DisplayGlyphInfo(Form.Self);
@@ -53,6 +55,8 @@ public class SpellBook : MonoBehaviour
         {
             _spellBuilder.TryAdd(Glyph.FromIcon(catalogueIcon), out var nextHighlights);
             _iconManager.HighlightGlyphGroups(nextHighlights, _spellBuilder.LastFunctionalGlyph);
+
+            _clearButton.SetActive(true);
         }
     }
 
@@ -62,5 +66,7 @@ public class SpellBook : MonoBehaviour
 
         _iconManager.HighlightGlyphGroups(nextHighlights);
         _iconManager.ClearSpell();
+
+        _clearButton.SetActive(false);
     }
 }
