@@ -9,7 +9,7 @@ public class SpellBook : MonoBehaviour
 {
     private GlyphConfig _config;
     private IconManager _iconManager;
-    private readonly SpellBuilder _spellBuilder = new();
+    private SpellBuilder _spellBuilder;
 
     [SerializeField]
     private GameObject _iconPrefab;
@@ -21,10 +21,11 @@ public class SpellBook : MonoBehaviour
 
 
     [Inject]
-    public void Initialize(GlyphConfig config, IconManager iconManager)
+    public void Initialize(GlyphConfig config)
     {
         _config = config;
-        _iconManager = iconManager;
+        _iconManager = new(_config, GetComponent<Canvas>(), _iconPrefab);
+        _spellBuilder = new();
 
         _iconManager.OnIconDisplay += DisplayGlyphInfo;
         _iconManager.OnIconAddToSpell += AddGlyphToSpell;
