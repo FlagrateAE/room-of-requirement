@@ -7,7 +7,7 @@ using System;
 using Zenject;
 
 [RequireComponent(typeof(Canvas))]
-public class SpellBookUI : MonoBehaviour
+public class SpellBook : MonoBehaviour
 {
     private GlyphConfig _config;
     [SerializeField]

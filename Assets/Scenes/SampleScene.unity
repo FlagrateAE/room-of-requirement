@@ -2253,7 +2253,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 16
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -2650,6 +2650,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f605fff2f20d4f47a7ec37519ab855b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _iconManager:
+    _state: 0
   _iconPrefab: {fileID: 224415333081439838, guid: d99e85f68e6bfb842be99d3a1a25f927, type: 3}
 --- !u!225 &2133577916
 CanvasGroup:

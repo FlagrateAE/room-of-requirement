@@ -24,7 +24,7 @@ public class IconManager
     private readonly Dictionary<Enum, Image> _modifiers = new();
 
     [SerializeField]
-    private SpellConstuctionState _state = SpellConstuctionState.Form;
+    private SpellBuildState _state = SpellBuildState.Form;
     [SerializeField]
     private List<Enum> _currentSpell = new();
 
@@ -93,42 +93,12 @@ public class IconManager
         );
         spellIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 60);
         AttachEventListener(spellIcon, IconType.Spell);
-        _currentSpell.Add(Glyph.FromIcon(catalogueIcon));
 
-        _state++;
-        HighlightGroupsByState();
+        Enum glyph = Glyph.FromIcon(catalogueIcon);
+        _currentSpell.Add(glyph);
+        NextState(glyph);
 
         static bool IsActive(GameObject icon) => icon.GetComponent<Image>().color.a == 1f;
-    }
-
-    private void RemoveGlyphFromSpell(GameObject icon)
-    {
-        UnityEngine.Object.Destroy(icon);
-        _currentSpell.Remove(Glyph.FromIcon(icon));
-
-        _state--;
-        HighlightGroupsByState();
-    }
-
-    private void HighlightGroupsByState()
-    {
-        Debug.Log(_state);
-
-        switch (_state)
-        {
-            case SpellConstuctionState.Form:
-                HighlightGlyphGroup(true, false, false);
-                break;
-            case SpellConstuctionState.FormModifiers:
-                HighlightGlyphGroup(false, false, true);
-                break;
-            case SpellConstuctionState.Effect:
-                HighlightGlyphGroup(false, true, false);
-                break;
-            case SpellConstuctionState.EffectModifiers:
-                HighlightGlyphGroup(false, false, true);
-                break;
-        }
     }
 
     private Transform GetContainer(GlyphType glyphType)
@@ -138,11 +108,43 @@ public class IconManager
         .GetComponentInChildren<HorizontalLayoutGroup>().transform;
     }
 
-    public void HighlightGlyphGroup(bool forms, bool effects, bool modifiers)
+    private void NextState(Enum addedGlyph)
+    {
+        if (_state == SpellBuildState.Form && typeof(Effect).IsAssignableFrom(addedGlyph.GetType()))
+            _state = SpellBuildState.EffectModifiers;
+        else
+            _state++;
+
+        HighlightGroupsByState();
+    }
+
+    private void HighlightGroupsByState()
+    {
+        Debug.Log(_state);
+
+        switch (_state)
+        {
+            case SpellBuildState.Form:
+                HighlightGlyphs(true, false, false);
+                break;
+            case SpellBuildState.FormModifiersOrEffect:
+                HighlightGlyphs(false, true, true);
+                break;
+            case SpellBuildState.EffectModifiers:
+                HighlightGlyphs(false, false, true);
+                break;
+        }
+    }
+
+    private void HighlightGlyphs(bool forms, bool effects, bool modifiers)
     {
         HighlightIcons(_forms, forms);
         HighlightIcons(_effects, effects);
-        HighlightIcons(_modifiers, modifiers);
+
+        if (modifiers)
+            HighlightIcons(GetCompatibleModifiers(_currentSpell[^1]), true);
+        else
+            HighlightIcons(_modifiers, false);
     }
 
     private void HighlightIcons(Dictionary<Enum, Image> icons, bool visible)
@@ -155,26 +157,15 @@ public class IconManager
         }
     }
 
-    private Dictionary<Enum, Image> GetCompatibleModifiers(Form targetForm)
+    private Dictionary<Enum, Image> GetCompatibleModifiers(Enum targetGlyph)
     {
-        return (Dictionary<Enum, Image>)_forms.Where(
+        return _modifiers.Where(
             kvp =>
             {
                 Modifier modifier = (Modifier)kvp.Key;
-                return _config.GetCompatibles(modifier).Contains(targetForm);
+                return _config.GetCompatibles(modifier).Contains(targetGlyph);
             }
-        );
-    }
-
-    private Dictionary<Enum, Image> GetCompatibleModifiers(Effect targetEffect)
-    {
-        return (Dictionary<Enum, Image>)_forms.Where(
-            kvp =>
-            {
-                Modifier modifier = (Modifier)kvp.Key;
-                return _config.GetCompatibles(modifier).Contains(targetEffect);
-            }
-        );
+        ).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
     private void AttachEventListener(GameObject icon, IconType type)
@@ -205,18 +196,13 @@ public class IconManager
     {
         Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
         OnIconDisplay?.Invoke(glyph);
-
-        if (eventData.button == PointerEventData.InputButton.Right)
-            RemoveGlyphFromSpell(eventData.pointerEnter);
     }
 
-    private enum SpellConstuctionState
+    private enum SpellBuildState
     {
         Form,
-        FormModifiers,
-        Effect,
+        FormModifiersOrEffect,
         EffectModifiers,
-        Done
     }
 
     private enum IconType
