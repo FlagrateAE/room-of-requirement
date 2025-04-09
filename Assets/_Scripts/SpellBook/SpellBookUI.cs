@@ -4,27 +4,22 @@ using TMPro;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using System;
-using System.Linq;
 using Zenject;
 
 [RequireComponent(typeof(Canvas))]
 public class SpellBookUI : MonoBehaviour
 {
     private GlyphConfig _config;
+    [SerializeField]
     private IconManager _iconManager;
 
     [SerializeField]
     private GameObject _iconPrefab;
-
-    private Transform _formsContainer;
-    private Transform _effectsContainer;
-    private Transform _modifiersContainer;
     private Transform _spellContainer;
 
     private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
-    private TextMeshProUGUI _invalidSpellWarning;
 
     private readonly List<Enum> _currentSpellRaw = new();
 
@@ -33,6 +28,8 @@ public class SpellBookUI : MonoBehaviour
     {
         _config = config;
         _iconManager = iconManager;
+
+        _iconManager.OnIconDisplay += DisplayGlyphInfo;
     }
 
     private void Start()
@@ -44,22 +41,11 @@ public class SpellBookUI : MonoBehaviour
         DisplayGlyphInfo(Form.Self);
     }
 
-    private Transform GetContainer(string glyphType)
-    {
-        return transform.Find(glyphType).GetComponentInChildren<HorizontalLayoutGroup>().transform;
-    }
-
     private void DisplayGlyphInfo(Enum glyph)
     {
         _nameInfo.text = glyph.ToString();
         _iconInfo.sprite = _config.GetIcon(glyph);
         _descriptionInfo.text = _config.GetDescription(glyph);
-    }
-
-    private void AddIconToCatalogue(Transform container, Enum glyph)
-    {
-        GameObject icon = IconFactory.CatalogueIcon(glyph, _iconPrefab, _config.GetIcon(glyph), OnCatalogueIconClicked);
-        icon.transform.SetParent(container, false);
     }
 
     private void AddGlyphToSpell(Enum glyph)

@@ -41,7 +41,7 @@ public class GlyphConfig
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
             Factor = 1.5f,
-            Compatibles = {}
+            Compatibles = new(){Effect.Launch, Effect.Enlarge}
         } },
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
