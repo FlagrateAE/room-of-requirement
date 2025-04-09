@@ -12,5 +12,6 @@ public class UIInstaller : MonoInstaller
     {
         Container.BindInstance(_spellBookCanvas);
         Container.BindInstance(_iconPrefab);
+        Container.Bind<IconManager>().AsSingle().NonLazy();
     }
 }

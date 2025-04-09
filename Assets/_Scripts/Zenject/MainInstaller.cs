@@ -10,6 +10,5 @@ public class MainInstaller : MonoInstaller
     {
         Container.Bind<SpriteLoader>().FromMethod(_ => new SpriteLoader(_iconsFolder)).AsSingle().NonLazy();
         Container.Bind<GlyphConfig>().AsSingle().NonLazy();
-        Container.Bind<IconManager>().AsSingle().NonLazy();
     }
 }

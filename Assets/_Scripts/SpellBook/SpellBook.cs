@@ -10,18 +10,16 @@ using Zenject;
 public class SpellBook : MonoBehaviour
 {
     private GlyphConfig _config;
-    [SerializeField]
     private IconManager _iconManager;
+    private readonly SpellBuilder _spellBuilder = new();
 
     [SerializeField]
     private GameObject _iconPrefab;
-    private Transform _spellContainer;
 
     private TextMeshProUGUI _nameInfo;
     private Image _iconInfo;
     private TextMeshProUGUI _descriptionInfo;
 
-    private readonly List<Enum> _currentSpellRaw = new();
 
     [Inject]
     public void Initialize(GlyphConfig config, IconManager iconManager)
@@ -30,6 +28,7 @@ public class SpellBook : MonoBehaviour
         _iconManager = iconManager;
 
         _iconManager.OnIconDisplay += DisplayGlyphInfo;
+        _iconManager.OnIconAddToSpell += AddGlyphToSpell;
     }
 
     private void Start()
@@ -38,6 +37,7 @@ public class SpellBook : MonoBehaviour
         _iconInfo = transform.Find("Info").GetComponentInChildren<Image>();
         _descriptionInfo = transform.Find("Info").Find("Description").GetComponent<TextMeshProUGUI>();
 
+        ClearSpell();
         DisplayGlyphInfo(Form.Self);
     }
 
@@ -48,86 +48,20 @@ public class SpellBook : MonoBehaviour
         _descriptionInfo.text = _config.GetDescription(glyph);
     }
 
-    private void AddGlyphToSpell(Enum glyph)
+    private void AddGlyphToSpell(GameObject catalogueIcon)
     {
-        GameObject icon = IconFactory.SpellIcon(glyph, _iconPrefab, _config.GetIcon(glyph), OnSpellIconClicked);
-        icon.transform.SetParent(_spellContainer, false);
-        _currentSpellRaw.Add(glyph);
-    }
-
-    private void RemoveGlyphFromSpell(GameObject glyphIcon)
-    {
-        _currentSpellRaw.Remove(Glyph.FromIcon(glyphIcon));
-        Destroy(glyphIcon);
-    }
-
-    private void OnCatalogueIconClicked(PointerEventData eventData)
-    {
-        Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
-        DisplayGlyphInfo(glyph);
-
-        if (eventData.button == PointerEventData.InputButton.Right)
-            AddGlyphToSpell(glyph);
-    }
-
-    private void OnSpellIconClicked(PointerEventData eventData)
-    {
-        Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
-
-        switch (eventData.button)
+        if (_iconManager.TryAddToSpell(catalogueIcon))
         {
-            case PointerEventData.InputButton.Left:
-                DisplayGlyphInfo(glyph);
-                break;
-            case PointerEventData.InputButton.Right:
-                RemoveGlyphFromSpell(eventData.pointerEnter);
-                break;
+            _spellBuilder.Add(Glyph.FromIcon(catalogueIcon), out var nextHighlights);
+            _iconManager.HighlightGlyphGroups(nextHighlights, _spellBuilder.LastGlyph);
         }
     }
 
-    private static class IconFactory
+    public void ClearSpell()
     {
-        public static GameObject CatalogueIcon(Enum glyph, GameObject iconPrefab, Sprite sprite, Action<PointerEventData> callback)
-        {
-            GameObject icon = CreateIcon(Glyph.Name(glyph), iconPrefab, sprite);
-            AttachEventListener(icon, IconMode.Catalogue, callback);
+        _spellBuilder.ClearSpell(out var nextHighlights);
 
-            return icon;
-        }
-
-        public static GameObject SpellIcon(Enum glyph, GameObject iconPrefab, Sprite sprite, Action<PointerEventData> callback)
-        {
-            GameObject icon = CreateIcon(Glyph.Name(glyph), iconPrefab, sprite);
-            AttachEventListener(icon, IconMode.Spell, callback);
-
-            return icon;
-        }
-
-        [Inject]
-        private static GameObject CreateIcon(string glyphName, GameObject iconPrefab, Sprite sprite)
-        {
-            GameObject icon = Instantiate(iconPrefab);
-            icon.name = $"{glyphName}Icon";
-            icon.GetComponent<Image>().sprite = sprite;
-
-            return icon;
-        }
-
-        private static void AttachEventListener(GameObject icon, IconMode mode, Action<PointerEventData> callback)
-        {
-            EventTrigger.Entry entry = new()
-            {
-                eventID = EventTriggerType.PointerClick,
-            };
-
-            entry.callback.AddListener((data) => callback(data as PointerEventData));
-            icon.GetComponent<EventTrigger>().triggers.Add(entry);
-        }
-
-        private enum IconMode
-        {
-            Catalogue,
-            Spell
-        }
+        _iconManager.HighlightGlyphGroups(nextHighlights);
+        _iconManager.ClearSpell();
     }
 }

@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 using System;
 using System.Linq;
 
-[Serializable]
 public class IconManager
 {
     private readonly GlyphConfig _config;
@@ -13,6 +12,7 @@ public class IconManager
     private readonly GameObject _iconPrefab;
 
     public event Action<Enum> OnIconDisplay;
+    public event Action<GameObject> OnIconAddToSpell;
 
     private readonly Transform _formsContainer;
     private readonly Transform _effectsContainer;
@@ -22,11 +22,6 @@ public class IconManager
     private readonly Dictionary<Enum, Image> _forms = new();
     private readonly Dictionary<Enum, Image> _effects = new();
     private readonly Dictionary<Enum, Image> _modifiers = new();
-
-    [SerializeField]
-    private SpellBuildState _state = SpellBuildState.Form;
-    [SerializeField]
-    private List<Enum> _currentSpell = new();
 
     public IconManager(GlyphConfig config, Canvas spellBookCanvas, GameObject iconPrefab)
     {
@@ -47,7 +42,6 @@ public class IconManager
             AddCatalogueIcon(modifier);
 
         _spellContainer = _spellBookCanvas.transform.Find("Spell");
-        HighlightGroupsByState();
     }
 
     private void AddCatalogueIcon(Enum glyph)
@@ -84,21 +78,40 @@ public class IconManager
         }
     }
 
-    private void AddGlyphToSpell(GameObject catalogueIcon)
+    public bool TryAddToSpell(GameObject originalIcon)
     {
-        if (!IsActive(catalogueIcon)) return;
+        if (!IsActive(originalIcon))
+            return false;
 
-        GameObject spellIcon = UnityEngine.Object.Instantiate(
-            catalogueIcon, _spellContainer, worldPositionStays: false
-        );
+        GameObject spellIcon = UnityEngine.Object.Instantiate(originalIcon, _spellContainer, false);
         spellIcon.GetComponent<RectTransform>().sizeDelta = new Vector2(60, 60);
         AttachEventListener(spellIcon, IconType.Spell);
 
-        Enum glyph = Glyph.FromIcon(catalogueIcon);
-        _currentSpell.Add(glyph);
-        NextState(glyph);
+        return true;
 
         static bool IsActive(GameObject icon) => icon.GetComponent<Image>().color.a == 1f;
+    }
+
+
+    private void AttachEventListener(GameObject icon, IconType type)
+    {
+        EventTrigger.Entry entry = new() { eventID = EventTriggerType.PointerClick };
+
+        Action<PointerEventData> callback = type switch
+        {
+            IconType.Catalogue => OnCatalogueIconClicked,
+            IconType.Spell => OnIconClicked,
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        };
+
+        entry.callback.AddListener((data) => callback(data as PointerEventData));
+        icon.GetComponent<EventTrigger>().triggers.Add(entry);
+    }
+
+    public void ClearSpell()
+    {
+        foreach (Transform child in _spellContainer)
+            UnityEngine.Object.Destroy(child.gameObject);
     }
 
     private Transform GetContainer(GlyphType glyphType)
@@ -108,41 +121,20 @@ public class IconManager
         .GetComponentInChildren<HorizontalLayoutGroup>().transform;
     }
 
-    private void NextState(Enum addedGlyph)
+    public void HighlightGlyphGroups((bool, bool, bool) highlightFlags, Enum lastGlyph = null)
     {
-        if (_state == SpellBuildState.Form && typeof(Effect).IsAssignableFrom(addedGlyph.GetType()))
-            _state = SpellBuildState.EffectModifiers;
-        else
-            _state++;
+        var (forms, effects, modifiers) = highlightFlags;
 
-        HighlightGroupsByState();
-    }
-
-    private void HighlightGroupsByState()
-    {
-        Debug.Log(_state);
-
-        switch (_state)
-        {
-            case SpellBuildState.Form:
-                HighlightGlyphs(true, false, false);
-                break;
-            case SpellBuildState.FormModifiersOrEffect:
-                HighlightGlyphs(false, true, true);
-                break;
-            case SpellBuildState.EffectModifiers:
-                HighlightGlyphs(false, false, true);
-                break;
-        }
-    }
-
-    private void HighlightGlyphs(bool forms, bool effects, bool modifiers)
-    {
         HighlightIcons(_forms, forms);
         HighlightIcons(_effects, effects);
 
+
         if (modifiers)
-            HighlightIcons(GetCompatibleModifiers(_currentSpell[^1]), true);
+        {
+            // Debug.Log($"Filtering compatible modifiers for {Glyph.Name(lastGlyph)} : {FilterCompatibleModifiers(lastGlyph).Count}");
+            HighlightIcons(_modifiers, false);
+            HighlightIcons(FilterCompatibleModifiers(lastGlyph), true);
+        }
         else
             HighlightIcons(_modifiers, false);
     }
@@ -157,7 +149,7 @@ public class IconManager
         }
     }
 
-    private Dictionary<Enum, Image> GetCompatibleModifiers(Enum targetGlyph)
+    private Dictionary<Enum, Image> FilterCompatibleModifiers(Enum targetGlyph)
     {
         return _modifiers.Where(
             kvp =>
@@ -168,41 +160,18 @@ public class IconManager
         ).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
 
-    private void AttachEventListener(GameObject icon, IconType type)
-    {
-        EventTrigger.Entry entry = new() { eventID = EventTriggerType.PointerClick };
-
-        Action<PointerEventData> callback = type switch
-        {
-            IconType.Catalogue => OnCatalogueIconClicked,
-            IconType.Spell => OnSpellIconClicked,
-            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
-        };
-
-        entry.callback.AddListener((data) => callback(data as PointerEventData));
-        icon.GetComponent<EventTrigger>().triggers.Add(entry);
-    }
-
     private void OnCatalogueIconClicked(PointerEventData eventData)
     {
-        Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
-        OnIconDisplay?.Invoke(glyph);
+        OnIconClicked(eventData);
 
         if (eventData.button == PointerEventData.InputButton.Right)
-            AddGlyphToSpell(eventData.pointerEnter);
+            OnIconAddToSpell?.Invoke(eventData.pointerEnter);
     }
 
-    private void OnSpellIconClicked(PointerEventData eventData)
+    private void OnIconClicked(PointerEventData eventData)
     {
         Enum glyph = Glyph.FromIcon(eventData.pointerEnter);
         OnIconDisplay?.Invoke(glyph);
-    }
-
-    private enum SpellBuildState
-    {
-        Form,
-        FormModifiersOrEffect,
-        EffectModifiers,
     }
 
     private enum IconType
