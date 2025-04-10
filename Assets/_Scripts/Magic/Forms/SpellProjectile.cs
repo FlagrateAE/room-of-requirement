@@ -6,7 +6,6 @@ public class SpellProjectile : MonoBehaviour
     public SpellData SpellData { get; private set; }
 
     private float _speed;
-    private string _effectName;
     private Rigidbody _rb;
     private bool _armed;
 
@@ -28,7 +27,7 @@ public class SpellProjectile : MonoBehaviour
         if (
             _armed
             && target.gameObject.TryGetComponent(out SpellInteractable interactable)
-            && interactable.IsCompatibleWith(_effectName)
+            && interactable.IsCompatibleWith(SpellData.Effect)
         )
             interactable.ApplySpell(SpellData);
     }
@@ -36,7 +35,6 @@ public class SpellProjectile : MonoBehaviour
     public void LoadSpellData(SpellData data)
     {
         SpellData = data;
-        _effectName = data.Controller.Name.Split("Controller")[0];
         _speed = data.FlightSpeed;
         SetColor(data.Color);
     }

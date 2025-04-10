@@ -12,6 +12,8 @@ public class SpellData
     public float Power { get; private set; }
     public float FlightSpeed { get; private set; } = 10f;
 
+    public Effect Effect => (Effect)Enum.Parse(typeof(Effect), Controller.Name.Split("Controller")[0]);
+
     public SpellData(Form form, Type controller, Color color, float power)
     {
         Form = form;

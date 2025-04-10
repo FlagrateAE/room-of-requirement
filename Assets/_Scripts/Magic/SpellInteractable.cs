@@ -1,12 +1,12 @@
 using UnityEngine;
-using System.Linq;
-using System;
+using System.Collections.Generic;
 
 public class SpellInteractable : MonoBehaviour
 {
-    private readonly string[] _incompatibleEffects = { };
+    [SerializeField]
+    private List<Effect> _incompatibleEffects = new();
 
-    public bool IsCompatibleWith(string effectName) => !_incompatibleEffects.Contains(effectName);
+    public bool IsCompatibleWith(Effect effect) => !_incompatibleEffects.Contains(effect);
 
     public void ApplySpell(SpellData spell)
     {

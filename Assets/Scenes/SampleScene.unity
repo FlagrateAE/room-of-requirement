@@ -268,6 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd07001fb6805144aec90023e43edff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _incompatibleEffects: 00000000
 --- !u!1 &104280067
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,9 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4412c207bf451a4881e559fee87c46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerCamera: {fileID: 330585546}
   _spellPrefab: {fileID: 8549628590489713725, guid: f7b435dd33f712e48b7707cad77d3671, type: 3}
-  _planeMaterial: {fileID: 2100000, guid: f491c00f4c3f3094bb32734d0950b25f, type: 2}
 --- !u!114 &506267109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -973,6 +972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd07001fb6805144aec90023e43edff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _incompatibleEffects: 
 --- !u!1 &556620445
 GameObject:
   m_ObjectHideFlags: 0
