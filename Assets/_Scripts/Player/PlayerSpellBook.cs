@@ -1,13 +1,8 @@
 using UnityEngine;
-using System;
-using Zenject;
-using System.Collections.Generic;
 
 [RequireComponent(typeof(PlayerSpellCast), typeof(PlayerCamera), typeof(PlayerMovement))]
 public class PlayerSpellBook : MonoBehaviour
 {
-    private GlyphConfig _config;
-
     private PlayerSpellCast _spellCast;
     private PlayerMovement _movement;
     private PlayerCamera _camera;
@@ -16,9 +11,6 @@ public class PlayerSpellBook : MonoBehaviour
     private SpellBook _spellBook;
 
     private bool _isOpen = false;
-
-    [Inject]
-    public void Initialize(GlyphConfig config) => _config = config;
 
     private void Start()
     {

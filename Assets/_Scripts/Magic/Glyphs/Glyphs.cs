@@ -33,5 +33,5 @@ public class EffectGlyph : Glyph
 public class ModifierGlyph : Glyph
 {
     public float Factor;
-    public List<Enum> Compatibles; // if empty, compatible with everything
+    public List<Enum> Compatibles;
 }

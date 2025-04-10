@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 [RequireComponent(typeof(Rigidbody))]
 public class SpellProjectile : MonoBehaviour
@@ -11,7 +10,6 @@ public class SpellProjectile : MonoBehaviour
     private Rigidbody _rb;
     private bool _armed;
 
-    // Launch the projectile
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();

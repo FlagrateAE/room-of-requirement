@@ -8,10 +8,6 @@ public class SpellInteractable : MonoBehaviour
 
     public bool IsCompatibleWith(string effectName) => !_incompatibleEffects.Contains(effectName);
 
-    /// <summary>
-    /// Applies the spell to this SpellInteractable by adding and initializing the appropriate EffectController.
-    /// </summary>
-    /// <param name="spell">The SpellData representing the spell to apply, containing the controller type.</param>
     public void ApplySpell(SpellData spell)
     {
         var controller = (EffectController)gameObject.AddComponent(spell.Controller);
