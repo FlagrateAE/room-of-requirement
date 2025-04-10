@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-/// <summary>
-/// Represents a spell, including its form, controller type, power, and modifiers.
-/// </summary>
 [Serializable]
 public class SpellData
 {
@@ -41,4 +38,6 @@ public class SpellData
             }
         }
     }
+
+    public override string ToString() => $"{Form} {Controller.Name} {Color} {Power} {FlightSpeed}";
 }

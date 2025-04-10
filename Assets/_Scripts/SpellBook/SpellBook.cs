@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections.Generic;
 using Zenject;
 
 [RequireComponent(typeof(Canvas))]
@@ -10,6 +11,7 @@ public class SpellBook : MonoBehaviour
     private GlyphConfig _config;
     private IconManager _iconManager;
     private SpellBuilder _spellBuilder;
+    public SpellBuilder Builder => _spellBuilder;
 
     [SerializeField]
     private GameObject _iconPrefab;
@@ -25,7 +27,7 @@ public class SpellBook : MonoBehaviour
     {
         _config = config;
         _iconManager = new(_config, GetComponent<Canvas>(), _iconPrefab);
-        _spellBuilder = new();
+        _spellBuilder = new(_config);
 
         _iconManager.OnIconDisplay += DisplayGlyphInfo;
         _iconManager.OnIconAddToSpell += AddGlyphToSpell;

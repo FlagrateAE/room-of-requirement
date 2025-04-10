@@ -22,6 +22,8 @@ public class LaunchController : EffectController
     {
         Rigidbody rb = GetComponent<Rigidbody>();
         rb.AddForce(Vector3.up * _power, ForceMode.Impulse);
+
+        Destroy(this);
     }
 }
 
@@ -30,5 +32,7 @@ public class EnlargeController : EffectController
     public override void ApplyEffect()
     {
         transform.localScale *= _power;
+
+        Destroy(this);
     }
 }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public class SpellBuilder
 {
+    private GlyphConfig _config;
+    public SpellBuilder(GlyphConfig config) => _config = config;
+
     public readonly List<Enum> Spell = new();
     private SpellBuildState _state = SpellBuildState.Form;
 
@@ -61,5 +64,52 @@ public class SpellBuilder
         FormModifiersOrEffect,
         EffectModifiers,
         MaxLengthReached
+    }
+
+    public SpellData BuildSpell()
+    {
+        if (!TryReadSpell(out var form, out var effect, out var modifiers))
+            return null;
+
+        SpellData result = new(
+            form,
+            _config.GetController(effect),
+            _config.GetColor(effect),
+            _config.GetPower(effect)
+        );
+
+        if (modifiers != null)
+            result.RegisterModifiers(modifiers, _config);
+
+        return result;
+    }
+
+    private bool TryReadSpell(out Form form, out Effect effect, out List<Modifier> modifiers)
+    {
+        form = default;
+        effect = default;
+        modifiers = new();
+
+        bool formPresent = false, effectPresent = false;
+
+        foreach (var glyph in Spell)
+        {
+            switch (glyph)
+            {
+                case Form f:
+                    form = f;
+                    formPresent = true;
+                    break;
+                case Effect e:
+                    effect = e;
+                    effectPresent = true;
+                    break;
+                case Modifier m:
+                    modifiers.Add(m);
+                    break;
+            }
+        }
+
+        return formPresent && effectPresent;
     }
 }

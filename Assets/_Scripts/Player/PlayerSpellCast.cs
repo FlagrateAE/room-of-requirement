@@ -14,6 +14,7 @@ public class PlayerSpellCast : MonoBehaviour
     private InputAction _castInput;
     [SerializeField]
     private Material _planeMaterial;
+    [SerializeField]
     public SpellData CurrentSpell;
 
     private void Start()
