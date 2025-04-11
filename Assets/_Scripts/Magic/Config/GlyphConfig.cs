@@ -50,7 +50,7 @@ public class GlyphConfig
         }},
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
-            Factor = 1.5f,
+            Factor = 0.5f,
             Compatibles = new(){Form.Projectile}
         }}
         };

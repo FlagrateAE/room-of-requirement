@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfd07001fb6805144aec90023e43edff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _incompatibleEffects: 00000000
+  _incompatibleEffects: 
 --- !u!1 &104280067
 GameObject:
   m_ObjectHideFlags: 0

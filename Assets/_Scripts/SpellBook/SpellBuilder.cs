@@ -73,6 +73,7 @@ public class SpellBuilder
 
         SpellData result = new(
             form,
+            effect,
             _config.GetController(effect),
             _config.GetColor(effect),
             _config.GetPower(effect)

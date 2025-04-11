@@ -27,8 +27,19 @@ public class PlayerSpellCast : MonoBehaviour
 
     private void Cast(SpellData spellData)
     {
+        if (spellData == null) return;
+
         switch (spellData.Form)
         {
+            case Form.Self:
+                if (
+                    TryGetComponent<SpellInteractable>(out var interactable) &&
+                    interactable.IsCompatibleWith(spellData.Effect)
+                )
+                    interactable.ApplySpell(spellData);
+                
+                break;
+
             case Form.Projectile:
                 GameObject spellInstance = Instantiate(_spellPrefab, _playerCamera.position, _playerCamera.rotation);
 

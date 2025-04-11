@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
-[Serializable]
 public class SpellData
 {
     public readonly Form Form;
+    public readonly Effect Effect;
     public readonly Type Controller;
     public readonly Color Color;
     public float Power { get; private set; }
     public float FlightSpeed { get; private set; } = 10f;
 
-    public Effect Effect => (Effect)Enum.Parse(typeof(Effect), Controller.Name.Split("Controller")[0]);
-
-    public SpellData(Form form, Type controller, Color color, float power)
+    public SpellData(Form form, Effect effect, Type controller, Color color, float power)
     {
         Form = form;
+        Effect = effect;
         Controller = controller;
         Color = color;
         Power = power;
