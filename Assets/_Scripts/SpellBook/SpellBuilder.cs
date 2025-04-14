@@ -73,8 +73,9 @@ public class SpellBuilder
 
         SpellData result = new(
             form,
+            _config.GetFormCaster(form),
             effect,
-            _config.GetController(effect),
+            _config.GetEffectController(effect),
             _config.GetColor(effect),
             _config.GetPower(effect)
         );

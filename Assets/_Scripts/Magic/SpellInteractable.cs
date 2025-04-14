@@ -10,7 +10,7 @@ public class SpellInteractable : MonoBehaviour
 
     public void ApplySpell(SpellData spell)
     {
-        var controller = (EffectController)gameObject.AddComponent(spell.Controller);
+        var controller = (EffectController)gameObject.AddComponent(spell.EffectController);
         controller.Initialize(spell);
     }
 }

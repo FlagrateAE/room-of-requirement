@@ -63,9 +63,11 @@ public class GlyphConfig
     public string GetDescription(Enum glyph) => GetValue<string>(glyph);
     public Sprite GetIcon(Enum glyph) => _iconLoader.GetIcon(glyph);
 
+    public Type GetFormCaster(Form form) => Type.GetType($"{form}Caster");
+
     public float GetPower(Effect effect) => GetValue<float>(effect);
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
-    public Type GetController(Effect effect) => Type.GetType($"{effect}Controller");
+    public Type GetEffectController(Effect effect) => Type.GetType($"{effect}Controller");
 
     public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);

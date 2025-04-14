@@ -6,17 +6,19 @@ using Zenject;
 public class SpellData
 {
     public readonly Form Form;
+    public readonly Type FormCaster;
     public readonly Effect Effect;
-    public readonly Type Controller;
+    public readonly Type EffectController;
     public readonly Color Color;
     public float Power { get; private set; }
     public float FlightSpeed { get; private set; } = 10f;
 
-    public SpellData(Form form, Effect effect, Type controller, Color color, float power)
+    public SpellData(Form form, Type formCaster, Effect effect, Type effectController, Color color, float power)
     {
         Form = form;
+        FormCaster = formCaster;
         Effect = effect;
-        Controller = controller;
+        EffectController = effectController;
         Color = color;
         Power = power;
     }
@@ -40,5 +42,5 @@ public class SpellData
         }
     }
 
-    public override string ToString() => $"{Form} {Controller.Name} {Color} {Power} {FlightSpeed}";
+    public override string ToString() => $"{Form} {EffectController.Name} {Color} {Power} {FlightSpeed}";
 }

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic;
 
 public abstract class Glyph
 {
@@ -19,19 +18,9 @@ public abstract class Glyph
     public static string Name(Enum glyph) => $"{glyph.GetType().Name}.{glyph}";
 }
 
-public class FormGlyph : Glyph
+public enum GlyphType
 {
-}
-
-public class EffectGlyph : Glyph
-{
-    public Color Color;
-    public float Power;
-    public Type Controller;
-}
-
-public class ModifierGlyph : Glyph
-{
-    public float Factor;
-    public List<Enum> Compatibles;
+    Form,
+    Effect,
+    Modifier
 }

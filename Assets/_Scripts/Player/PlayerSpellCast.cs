@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,6 +26,8 @@ public class PlayerSpellCast : MonoBehaviour
         }
     }
 
+    public void ArmSpell(SpellData spellData) => gameObject.AddComponent(spellData.FormCaster);
+
     private void Cast(SpellData spellData)
     {
         if (spellData == null) return;
@@ -37,7 +40,7 @@ public class PlayerSpellCast : MonoBehaviour
                     interactable.IsCompatibleWith(spellData.Effect)
                 )
                     interactable.ApplySpell(spellData);
-                
+
                 break;
 
             case Form.Projectile:
