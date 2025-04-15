@@ -3,8 +3,8 @@ using System;
 
 public class ModifierGlyph : Glyph
 {
-    public float Factor;
     public List<Enum> Compatibles;
+    public Action<SpellData> Modify;
 }
 
 public enum Modifier

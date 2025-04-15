@@ -48,8 +48,6 @@ public class ProjectileCaster : FormCaster
 
     public override void Cast()
     {
-        Debug.Log(_spellPrefab);
-
         GameObject spellInstance = Instantiate(_spellPrefab, _playerCamera.position, _playerCamera.rotation);
 
         SpellProjectile spellComponent = spellInstance.GetComponent<SpellProjectile>();

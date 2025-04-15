@@ -10,8 +10,8 @@ public class SpellData
     public readonly Effect Effect;
     public readonly Type EffectController;
     public readonly Color Color;
-    public float Power { get; private set; }
-    public float FlightSpeed { get; private set; } = 10f;
+    public float Power;
+    public float FlightSpeed = 10f;
 
     public SpellData(Form form, Type formCaster, Effect effect, Type effectController, Color color, float power)
     {
@@ -28,17 +28,7 @@ public class SpellData
     {
         foreach (var modifier in modifiers)
         {
-            switch (modifier)
-            {
-                case Modifier.Amplify:
-                    Power *= config.GetFactor(modifier);
-                    break;
-
-                case Modifier.Accelerate:
-                case Modifier.Decelerate:
-                    FlightSpeed *= config.GetFactor(modifier);
-                    break;
-            }
+            config.GetModifierFunction(modifier)(this);
         }
     }
 

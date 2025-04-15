@@ -40,18 +40,18 @@ public class GlyphConfig
         // MODIFIERS
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
-            Factor = 1.5f,
-            Compatibles = new(){Effect.Launch, Effect.Enlarge}
+            Compatibles = new(){Effect.Launch, Effect.Enlarge},
+            Modify = (spell) => spell.Power *= 1.5f
         } },
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
-            Factor = 1.5f,
-            Compatibles = new(){Form.Projectile}
+            Compatibles = new(){Form.Projectile},
+            Modify = (spell) => spell.FlightSpeed *= 1.5f
         }},
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
-            Factor = 0.5f,
-            Compatibles = new(){Form.Projectile}
+            Compatibles = new(){Form.Projectile},
+            Modify = (spell) => spell.FlightSpeed *= 0.5f
         }}
         };
     }
@@ -69,7 +69,7 @@ public class GlyphConfig
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
     public Type GetEffectController(Effect effect) => Type.GetType($"{effect}Controller");
 
-    public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
+    public Action<SpellData> GetModifierFunction(Modifier modifier) => GetValue<Action<SpellData>>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
 
     private T GetValue<T>(Enum glyph)
