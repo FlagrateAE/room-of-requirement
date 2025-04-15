@@ -1,55 +1,19 @@
-using Unity.VisualScripting;
+using System.ComponentModel;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using Zenject;
 
 public class PlayerSpellCast : MonoBehaviour
 {
-    private Transform _playerCamera;
-    private InputAction _castInput;
+    [Inject]
+    private DiContainer _container;
 
-    [SerializeField]
-    private GameObject _spellPrefab;
-    [SerializeField]
-    public SpellData CurrentSpell;
-
-    private void Start()
+    public void ArmSpell(SpellData spellData)
     {
-        _castInput = InputSystem.actions.FindAction("Attack");
-        _playerCamera = transform.Find("Main Camera");
-    }
+        if (TryGetComponent<FormCaster>(out var formCaster))
+            Destroy(formCaster);
 
-    private void Update()
-    {
-        if (_castInput.WasPressedThisFrame())
-        {
-            Cast(CurrentSpell);
-        }
-    }
-
-    public void ArmSpell(SpellData spellData) => gameObject.AddComponent(spellData.FormCaster);
-
-    private void Cast(SpellData spellData)
-    {
-        if (spellData == null) return;
-
-        switch (spellData.Form)
-        {
-            case Form.Self:
-                if (
-                    TryGetComponent<SpellInteractable>(out var interactable) &&
-                    interactable.IsCompatibleWith(spellData.Effect)
-                )
-                    interactable.ApplySpell(spellData);
-
-                break;
-
-            case Form.Projectile:
-                GameObject spellInstance = Instantiate(_spellPrefab, _playerCamera.position, _playerCamera.rotation);
-
-                SpellProjectile spellComponent = spellInstance.GetComponent<SpellProjectile>();
-                spellComponent.LoadSpellData(spellData);
-
-                break;
-        }
+        formCaster = gameObject.AddComponent(spellData.FormCaster) as FormCaster;
+        _container.Inject(formCaster);
+        formCaster.Initialize(spellData);
     }
 }

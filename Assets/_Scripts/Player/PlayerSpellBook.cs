@@ -32,7 +32,7 @@ public class PlayerSpellBook : MonoBehaviour
             if (_isOpen)
             {
                 ToggleUI();
-                _spellCast.CurrentSpell = _spellBook.Builder.BuildSpell();
+                _spellCast.ArmSpell(_spellBook.Builder.BuildSpell());
             }
         }
     }
