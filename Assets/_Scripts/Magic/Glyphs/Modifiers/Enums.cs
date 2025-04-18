@@ -3,13 +3,22 @@ using System;
 
 public class ModifierGlyph : Glyph
 {
+    public ModifierType Type;
+    public float Factor;
     public List<Enum> Compatibles;
-    public Action<SpellData> Modify;
 }
 
 public enum Modifier
 {
-    Amplify,
     Accelerate,
-    Decelerate
+    Amplify,
+    Dampen,
+    Decelerate,
+    // Pierce
+}
+
+public enum ModifierType
+{
+    Factor,
+    Behavior
 }

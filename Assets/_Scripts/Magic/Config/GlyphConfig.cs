@@ -15,44 +15,53 @@ public class GlyphConfig
         _glyphs = new(){
 
         // FORMS
-        { Form.Self, new FormGlyph(){
-            Description = "Applies the spell efect to the caster himself",
+        { Form.MagicSphere, new FormGlyph(){
+            Description = "Creates a magic sphere that applies the spell effect to all things inside it",
         } },
         { Form.Projectile, new FormGlyph(){
             Description = "Sends a magic projectile that applies the spell effect to the target (first thing it hits)",
         } },
-        { Form.MagicSphere, new FormGlyph(){
-            Description = "Creates a magic sphere that applies the spell effect to all things inside it",
+        { Form.Self, new FormGlyph(){
+            Description = "Applies the spell efect to the caster himself",
         } },
 
         // EFFECTS
-        { Effect.Launch, new EffectGlyph(){
-            Description = "Sends the object high up in the air",
-            Power = 10f,
-            Color = Color.white,
-        }},
         { Effect.Enlarge, new EffectGlyph(){
             Description = "Makes object larger. There is a size limit",
             Power = 1.5f,
             Color = Color.red,
         } },
+        { Effect.Launch, new EffectGlyph(){
+            Description = "Sends the object high up in the air",
+            Power = 10f,
+            Color = Color.white,
+        }},
 
         // MODIFIERS
-        { Modifier.Amplify, new ModifierGlyph(){
-            Description = "Increases the power of the effect",
-            Compatibles = new(){Effect.Launch, Effect.Enlarge},
-            Modify = (spell) => spell.Power *= 1.5f
-        } },
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
             Compatibles = new(){Form.Projectile},
-            Modify = (spell) => spell.FlightSpeed *= 1.5f
+            Factor = 1.5f
         }},
+        { Modifier.Amplify, new ModifierGlyph(){
+            Description = "Increases the power of the effect",
+            Compatibles = new(){Effect.Launch, Effect.Enlarge},
+            Factor = 1.5f
+        } },
+        { Modifier.Dampen, new ModifierGlyph(){
+            Description = "Decreases the power of the effect",
+            Compatibles = new(){Effect.Launch, Effect.Enlarge},
+            Factor = 0.5f
+        } },
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
             Compatibles = new(){Form.Projectile},
-            Modify = (spell) => spell.FlightSpeed *= 0.5f
-        }}
+            Factor = 0.5f
+        }},
+        // { Modifier.Pierce, new ModifierGlyph(){
+        //     Description = "Allows the spell projectile to pass through objects instead of destroying on 1st hit. 1 Pierce = 1 object",
+        //     Compatibles = new(){Form.Projectile},
+        // }},
         };
     }
 
@@ -69,7 +78,8 @@ public class GlyphConfig
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
     public Type GetEffectController(Effect effect) => Type.GetType($"{effect}Controller");
 
-    public Action<SpellData> GetModifierFunction(Modifier modifier) => GetValue<Action<SpellData>>(modifier);
+    public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
+    public ModifierType GetModifierType(Modifier modifier) => GetValue<ModifierType>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
 
     private T GetValue<T>(Enum glyph)

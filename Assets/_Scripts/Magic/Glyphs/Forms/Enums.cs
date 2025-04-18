@@ -2,7 +2,7 @@ public class FormGlyph : Glyph { }
 
 public enum Form
 {
-    Self,
+    MagicSphere,
     Projectile,
-    MagicSphere
+    Self,
 }
