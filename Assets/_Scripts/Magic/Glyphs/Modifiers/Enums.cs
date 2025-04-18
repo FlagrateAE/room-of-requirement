@@ -14,7 +14,7 @@ public enum Modifier
     Amplify,
     Dampen,
     Decelerate,
-    // Pierce
+    Pierce
 }
 
 public enum ModifierType

@@ -58,10 +58,10 @@ public class GlyphConfig
             Compatibles = new(){Form.Projectile},
             Factor = 0.5f
         }},
-        // { Modifier.Pierce, new ModifierGlyph(){
-        //     Description = "Allows the spell projectile to pass through objects instead of destroying on 1st hit. 1 Pierce = 1 object",
-        //     Compatibles = new(){Form.Projectile},
-        // }},
+        { Modifier.Pierce, new ModifierGlyph(){
+            Description = "Allows the spell projectile to pass through objects instead of destroying on 1st hit. 1 Pierce = 1 object",
+            Compatibles = new(){Form.Projectile},
+        }},
         };
     }
 

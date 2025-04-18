@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: spritesheet_0
+      name: modifiers_0
       rect:
         serializedVersion: 2
         x: 0
@@ -112,14 +112,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8c3c5f3c94049484888fc5488bf33be5
-      internalID: 478024089
+      spriteID: 2dcfd0d256e6856489829f06ff84f606
+      internalID: -657910624
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_1
+      name: modifiers_1
       rect:
         serializedVersion: 2
         x: 121
@@ -134,14 +134,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 665434601fcdd564f9db4a6491bccee8
-      internalID: 337380805
+      spriteID: 234ca25377a6017408b9726e40ea45e9
+      internalID: -2052742527
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: spritesheet_2
+      name: modifiers_2
       rect:
         serializedVersion: 2
         x: 242
@@ -156,8 +156,52 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0fb9b6a6c02b8449811f2387047279a
-      internalID: -388786078
+      spriteID: a4efd870bf5af4f4c9ce55a037a34a11
+      internalID: 1849327958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: modifiers_3
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 0
+        width: 121
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e59c83d82c16d7c44bb9df53f8df21c0
+      internalID: -1802246897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: modifiers_4
+      rect:
+        serializedVersion: 2
+        x: 484
+        y: 0
+        width: 121
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af33e3d8a910b4f40b262fed22251838
+      internalID: 1422574202
       vertices: []
       indices: 
       edges: []
@@ -176,9 +220,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      spritesheet_0: 478024089
-      spritesheet_1: 337380805
-      spritesheet_2: -388786078
+      modifiers_0: -657910624
+      modifiers_1: -2052742527
+      modifiers_2: 1849327958
+      modifiers_3: -1802246897
+      modifiers_4: 1422574202
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
