@@ -7,8 +7,10 @@ using System.Linq;
 public class GlyphConfig
 {
     private readonly Dictionary<Enum, Glyph> _glyphs;
-    private readonly SpriteLoader _iconLoader;
+    private readonly Dictionary<Form, Type> _formCasterCache = new();
+    private readonly Dictionary<Effect, Type> _effectControllerCache = new();
 
+    private readonly SpriteLoader _iconLoader;
     public GlyphConfig(SpriteLoader iconLoader)
     {
         _iconLoader = iconLoader;
@@ -72,11 +74,27 @@ public class GlyphConfig
     public string GetDescription(Enum glyph) => GetValue<string>(glyph);
     public Sprite GetIcon(Enum glyph) => _iconLoader.GetIcon(glyph);
 
-    public Type GetFormCaster(Form form) => Type.GetType($"{form}Caster");
+    public Type GetFormCaster(Form form)
+    {
+        if (!_formCasterCache.TryGetValue(form, out Type casterType))
+        {
+            casterType = Type.GetType($"{form}Caster");
+            _formCasterCache[form] = casterType;
+        }
+        return casterType;
+    }
 
     public float GetPower(Effect effect) => GetValue<float>(effect);
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
-    public Type GetEffectController(Effect effect) => Type.GetType($"{effect}Controller");
+    public Type GetEffectController(Effect effect)
+    {
+        if (!_effectControllerCache.TryGetValue(effect, out Type controllerType))
+        {
+            controllerType = Type.GetType($"{effect}Controller");
+            _effectControllerCache[effect] = controllerType;
+        }
+        return controllerType;
+    }
 
     public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
     public ModifierType GetModifierType(Modifier modifier) => GetValue<ModifierType>(modifier);
