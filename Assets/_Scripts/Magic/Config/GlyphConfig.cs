@@ -99,18 +99,29 @@ public class GlyphConfig
         }
 
         Glyph found = _glyphs[glyph];
-        FieldInfo[] fields = found.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-        foreach (FieldInfo field in fields)
+        if (TryReflectFromGlyph(found, out T value))
         {
-            if (typeof(T).IsAssignableFrom(field.FieldType))
-            {
-                T value = (T)field.GetValue(found);
-                typeDict[typeof(T)] = value;
-                return value;
-            }
+            typeDict[typeof(T)] = value;
+            return value;
         }
 
         typeDict[typeof(T)] = default(T);
         return default;
+    }
+
+    private bool TryReflectFromGlyph<T>(Glyph glyph, out T value)
+    {
+        FieldInfo[] fields = glyph.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (FieldInfo field in fields)
+        {
+            if (typeof(T).IsAssignableFrom(field.FieldType))
+            {
+                value = (T)field.GetValue(glyph);
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
     }
 }
