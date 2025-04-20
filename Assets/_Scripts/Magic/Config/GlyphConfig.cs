@@ -74,45 +74,43 @@ public class GlyphConfig
     public string GetDescription(Enum glyph) => GetValue<string>(glyph);
     public Sprite GetIcon(Enum glyph) => _iconLoader.GetIcon(glyph);
 
-    public Type GetFormCaster(Form form)
-    {
-        if (!_formCasterCache.TryGetValue(form, out Type casterType))
-        {
-            casterType = Type.GetType($"{form}Caster");
-            _formCasterCache[form] = casterType;
-        }
-        return casterType;
-    }
+    public Type GetFormCaster(Form form) => Type.GetType($"{form}Caster");
 
     public float GetPower(Effect effect) => GetValue<float>(effect);
     public Color GetColor(Effect effect) => GetValue<Color>(effect);
-    public Type GetEffectController(Effect effect)
-    {
-        if (!_effectControllerCache.TryGetValue(effect, out Type controllerType))
-        {
-            controllerType = Type.GetType($"{effect}Controller");
-            _effectControllerCache[effect] = controllerType;
-        }
-        return controllerType;
-    }
+    public Type GetEffectController(Effect effect) => Type.GetType($"{effect}Controller");
 
     public float GetFactor(Modifier modifier) => GetValue<float>(modifier);
     public ModifierType GetModifierType(Modifier modifier) => GetValue<ModifierType>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
 
+    private readonly Dictionary<Enum, Dictionary<Type, object>> _valueCache = new();
     private T GetValue<T>(Enum glyph)
     {
-        Glyph found = _glyphs[glyph];
+        if (_valueCache.TryGetValue(glyph, out var typeDict))
+        {
+            if (typeDict.TryGetValue(typeof(T), out var cachedValue))
+                return (T)cachedValue;
+        }
+        else
+        {
+            typeDict = new Dictionary<Type, object>();
+            _valueCache[glyph] = typeDict;
+        }
 
+        Glyph found = _glyphs[glyph];
         FieldInfo[] fields = found.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
         foreach (FieldInfo field in fields)
         {
             if (typeof(T).IsAssignableFrom(field.FieldType))
             {
-                return (T)field.GetValue(found);
+                T value = (T)field.GetValue(found);
+                typeDict[typeof(T)] = value;
+                return value;
             }
         }
 
+        typeDict[typeof(T)] = default(T);
         return default;
     }
 }
