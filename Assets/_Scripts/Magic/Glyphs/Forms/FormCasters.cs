@@ -4,6 +4,8 @@ using Zenject;
 
 public abstract class FormCaster : MonoBehaviour
 {
+    [Inject]
+    protected GlyphConfig _config;
     protected InputAction _castInput;
     protected SpellData _spell;
 
@@ -11,15 +13,21 @@ public abstract class FormCaster : MonoBehaviour
     {
         _castInput = InputSystem.actions.FindAction("Attack");
         _spell = spell;
+
+        foreach (var modifier in spell.Modifiers)
+            RegisterModifier(modifier);
     }
 
     private void Update()
     {
-        if (_castInput.WasPressedThisFrame())
+        if (_castInput != null && _castInput.WasPressedThisFrame())
+        {
             Cast();
+        }
     }
 
     public abstract void Cast();
+    public virtual void RegisterModifier(Modifier modifier) { }
 }
 
 [RequireComponent(typeof(SpellInteractable))]
@@ -44,6 +52,16 @@ public class ProjectileCaster : FormCaster
     {
         base.Initialize(spell);
         _playerCamera = Camera.main.transform;
+    }
+
+    public override void RegisterModifier(Modifier modifier)
+    {
+        switch (modifier)
+        {
+            case Modifier.Pierce:
+                _spell.PierceDepth++;
+                break;
+        }
     }
 
     public override void Cast()

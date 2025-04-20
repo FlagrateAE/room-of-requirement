@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Zenject;
 
 public class SpellInteractable : MonoBehaviour
 {
+    [Inject]
+    private DiContainer _container;
+
     [SerializeField]
     private List<Effect> _incompatibleEffects = new();
 
@@ -11,6 +15,7 @@ public class SpellInteractable : MonoBehaviour
     public void ApplySpell(SpellData spell)
     {
         var controller = (EffectController)gameObject.AddComponent(spell.EffectController);
+        _container.Inject(controller);
         controller.Initialize(spell);
     }
 }

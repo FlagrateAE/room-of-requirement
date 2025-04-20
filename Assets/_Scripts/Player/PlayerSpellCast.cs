@@ -9,6 +9,8 @@ public class PlayerSpellCast : MonoBehaviour
 
     public void ArmSpell(SpellData spellData)
     {
+        if (spellData == null) return;
+
         if (TryGetComponent<FormCaster>(out var formCaster))
             Destroy(formCaster);
 

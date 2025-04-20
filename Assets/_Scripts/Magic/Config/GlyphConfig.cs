@@ -28,7 +28,7 @@ public class GlyphConfig
         // EFFECTS
         { Effect.Enlarge, new EffectGlyph(){
             Description = "Makes object larger. There is a size limit",
-            Power = 1.5f,
+            Power = 1.25f,
             Color = Color.red,
         } },
         { Effect.Launch, new EffectGlyph(){
@@ -41,22 +41,22 @@ public class GlyphConfig
         { Modifier.Accelerate, new ModifierGlyph(){
             Description = "Increases the speed of the spell projectile",
             Compatibles = new(){Form.Projectile},
-            Factor = 1.5f
+            Factor = 1.25f
         }},
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
             Compatibles = new(){Effect.Launch, Effect.Enlarge},
-            Factor = 1.5f
+            Factor = 1.25f
         } },
         { Modifier.Dampen, new ModifierGlyph(){
             Description = "Decreases the power of the effect",
             Compatibles = new(){Effect.Launch, Effect.Enlarge},
-            Factor = 0.5f
+            Factor = 0.75f
         } },
         { Modifier.Decelerate, new ModifierGlyph(){
             Description = "Decreases the speed of the spell projectile",
             Compatibles = new(){Form.Projectile},
-            Factor = 0.5f
+            Factor = 0.75f
         }},
         { Modifier.Pierce, new ModifierGlyph(){
             Description = "Allows the spell projectile to pass through objects instead of destroying on 1st hit. 1 Pierce = 1 object",

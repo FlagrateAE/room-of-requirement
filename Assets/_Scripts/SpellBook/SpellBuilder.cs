@@ -48,7 +48,6 @@ public class SpellBuilder
         nextHighlights = GetHighlights();
     }
 
-
     private (bool, bool, bool) GetHighlights() => _state switch
     {
         SpellBuildState.Form => (true, false, false),
@@ -71,17 +70,18 @@ public class SpellBuilder
         if (!TryReadSpell(out var form, out var effect, out var modifiers))
             return null;
 
-        SpellData result = new(
-            form,
-            _config.GetFormCaster(form),
-            effect,
-            _config.GetEffectController(effect),
-            _config.GetColor(effect),
-            _config.GetPower(effect)
-        );
+        SpellData result = new()
+        {
+            Form = form,
+            FormCaster = _config.GetFormCaster(form),
+            Effect = effect,
+            EffectController = _config.GetEffectController(effect),
+            Color = _config.GetColor(effect),
+            Power = _config.GetPower(effect)
+        };
 
         if (modifiers != null)
-            result.RegisterModifiers(modifiers, _config);
+            result.Modifiers = modifiers;
 
         return result;
     }

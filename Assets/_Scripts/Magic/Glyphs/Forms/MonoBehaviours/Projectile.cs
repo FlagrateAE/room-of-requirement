@@ -9,6 +9,9 @@ public class SpellProjectile : MonoBehaviour
     private Rigidbody _rb;
     private bool _armed;
 
+    // MODIFIERS DATA
+    private int _pierceDepth = 0;
+
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
@@ -29,7 +32,15 @@ public class SpellProjectile : MonoBehaviour
             && target.gameObject.TryGetComponent(out SpellInteractable interactable)
             && interactable.IsCompatibleWith(SpellData.Effect)
         )
+        {
             interactable.ApplySpell(SpellData);
+            if (_pierceDepth == 0)
+                Destroy(gameObject);
+            else
+                _pierceDepth--;
+        }
+
+
     }
 
     public void LoadSpellData(SpellData data)
@@ -37,6 +48,8 @@ public class SpellProjectile : MonoBehaviour
         SpellData = data;
         _speed = data.FlightSpeed;
         SetColor(data.Color);
+
+        _pierceDepth = data.PierceDepth;
     }
 
     private void SetColor(Color color)

@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2dcfd0d256e6856489829f06ff84f606
-      internalID: -657910624
+      spriteID: a9bf3b9b4737ae3438f69d59649a02c9
+      internalID: 2035900111
       vertices: []
       indices: 
       edges: []
@@ -134,8 +134,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 234ca25377a6017408b9726e40ea45e9
-      internalID: -2052742527
+      spriteID: 278388cdec81fdc4992566ac1bbc83ba
+      internalID: 1144294392
       vertices: []
       indices: 
       edges: []
@@ -156,8 +156,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a4efd870bf5af4f4c9ce55a037a34a11
-      internalID: 1849327958
+      spriteID: ea3c3c8c71e041c41834dd87621eabe2
+      internalID: -976608390
       vertices: []
       indices: 
       edges: []
@@ -178,8 +178,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e59c83d82c16d7c44bb9df53f8df21c0
-      internalID: -1802246897
+      spriteID: 1b66f746344cf574eb538646e0d01c87
+      internalID: -2135222858
       vertices: []
       indices: 
       edges: []
@@ -200,8 +200,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: af33e3d8a910b4f40b262fed22251838
-      internalID: 1422574202
+      spriteID: 5d5f59a54f011544699f15612a2d478b
+      internalID: -1261014743
       vertices: []
       indices: 
       edges: []
@@ -210,7 +210,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 36383560fdd551b46802156732021407
+    spriteID: 20344555dfe50744a9f0b48e4a0b4eb9
     internalID: 0
     vertices: []
     indices: 
@@ -220,11 +220,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      modifiers_0: -657910624
-      modifiers_1: -2052742527
-      modifiers_2: 1849327958
-      modifiers_3: -1802246897
-      modifiers_4: 1422574202
+      modifiers_0: 2035900111
+      modifiers_1: 1144294392
+      modifiers_2: -976608390
+      modifiers_3: -2135222858
+      modifiers_4: -1261014743
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
