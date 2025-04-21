@@ -93,7 +93,7 @@ public class GlyphConfig
         var key = (glyph, typeof(T));
         if (_valueCache.TryGetValue(key, out var cachedValue))
         {
-            Debug.Log($"Retrieved {typeof(T).Name} from cache for {glyph}");
+            // Debug.Log($"Retrieved {typeof(T).Name} from cache for {glyph}");
             _usageOrder.Remove(key);
             _usageOrder.AddLast(key);
             return (T)cachedValue;
@@ -110,7 +110,7 @@ public class GlyphConfig
             {
                 _valueCache[key] = value;
                 _usageOrder.AddLast(key);
-                Debug.Log($"Cached {typeof(T).Name} from {glyph}, cache size: {_valueCache.Count}");
+                // Debug.Log($"Cached {typeof(T).Name} from {glyph}, cache size: {_valueCache.Count}");
                 return value;
             }
         }
@@ -143,7 +143,7 @@ public class GlyphConfig
             _usageOrder.RemoveFirst();
             _valueCache.Remove(lruKey);
 
-            Debug.Log($"Evicted {lruKey.glyph} ({lruKey.type.Name}) from cache, cache size: {_valueCache.Count}");
+            // Debug.Log($"Evicted {lruKey.glyph} ({lruKey.type.Name}) from cache, cache size: {_valueCache.Count}");
         }
     }
 }
