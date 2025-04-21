@@ -39,6 +39,11 @@ public class PlayerSpellBook : MonoBehaviour
 
     public void ToggleUI()
     {
+        if (TryGetComponent<FormCaster>(out var formCaster))
+        {
+            formCaster.ToggleArmed();
+        }
+
         _camera.ToggleCursorLock();
         _camera.ToggleCameraLock();
         _movement.ToggleMovment();

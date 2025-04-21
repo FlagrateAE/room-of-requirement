@@ -8,6 +8,7 @@ public abstract class FormCaster : MonoBehaviour
     protected GlyphConfig _config;
     protected InputAction _castInput;
     protected SpellData _spell;
+    protected bool _isArmed;
 
     public virtual void Initialize(SpellData spell)
     {
@@ -16,11 +17,13 @@ public abstract class FormCaster : MonoBehaviour
 
         foreach (var modifier in spell.Modifiers)
             RegisterModifier(modifier);
+
+        _isArmed = true;
     }
 
     private void Update()
     {
-        if (_castInput != null && _castInput.WasPressedThisFrame())
+        if (_castInput != null && _isArmed && _castInput.WasPressedThisFrame())
         {
             Cast();
         }
@@ -28,6 +31,8 @@ public abstract class FormCaster : MonoBehaviour
 
     public abstract void Cast();
     public virtual void RegisterModifier(Modifier modifier) { }
+
+    public void ToggleArmed () => _isArmed = !_isArmed;
 }
 
 [RequireComponent(typeof(SpellInteractable))]
