@@ -100,7 +100,7 @@ public class GlyphConfig
         }
         else
         {
-            if (_valueCache.Count == _cacheSize)
+            if (_valueCache.Count >= _cacheSize)
             {
                 EvictCache();
             }
@@ -109,6 +109,7 @@ public class GlyphConfig
             if (TryReflectFromGlyph(found, out T value))
             {
                 _valueCache[key] = value;
+                _usageOrder.AddLast(key);
                 Debug.Log($"Cached {typeof(T).Name} from {glyph}, cache size: {_valueCache.Count}");
                 return value;
             }
@@ -145,8 +146,6 @@ public class GlyphConfig
             Debug.Log($"Evicted {lruKey.glyph} ({lruKey.type.Name}) from cache, cache size: {_valueCache.Count}");
         }
     }
-
-
 }
 
 public enum CacheEvictionPolicy
