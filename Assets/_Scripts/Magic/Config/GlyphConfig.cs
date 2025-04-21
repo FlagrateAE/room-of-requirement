@@ -8,10 +8,15 @@ public class GlyphConfig
 {
     private readonly Dictionary<Enum, Glyph> _glyphs;
     private readonly SpriteLoader _iconLoader;
+    private readonly int _cacheSize;
+    private readonly CacheEvictionPolicy _evictionPolicy;
 
-    public GlyphConfig(SpriteLoader iconLoader)
+    public GlyphConfig(SpriteLoader iconLoader, int cacheSize, CacheEvictionPolicy evictionPolicy)
     {
         _iconLoader = iconLoader;
+        _cacheSize = cacheSize;
+        _evictionPolicy = evictionPolicy;
+
         _glyphs = new(){
 
         // FORMS
@@ -82,19 +87,68 @@ public class GlyphConfig
     public ModifierType GetModifierType(Modifier modifier) => GetValue<ModifierType>(modifier);
     public List<Enum> GetCompatibles(Modifier modifier) => GetValue<List<Enum>>(modifier);
 
+    private readonly Dictionary<(Enum, Type), object> _valueCache = new();
     private T GetValue<T>(Enum glyph)
     {
-        Glyph found = _glyphs[glyph];
-
-        FieldInfo[] fields = found.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-        foreach (FieldInfo field in fields)
+        var key = (glyph, typeof(T));
+        if (_valueCache.TryGetValue(key, out var cachedValue))
         {
-            if (typeof(T).IsAssignableFrom(field.FieldType))
+            // Debug.Log($"Retrieved {typeof(T).Name} from cache for {glyph}");
+            _usageOrder.Remove(key);
+            _usageOrder.AddLast(key);
+            return (T)cachedValue;
+        }
+        else
+        {
+            if (_valueCache.Count >= _cacheSize)
             {
-                return (T)field.GetValue(found);
+                EvictCache();
+            }
+
+            Glyph found = _glyphs[glyph];
+            if (TryReflectFromGlyph(found, out T value))
+            {
+                _valueCache[key] = value;
+                _usageOrder.AddLast(key);
+                // Debug.Log($"Cached {typeof(T).Name} from {glyph}, cache size: {_valueCache.Count}");
+                return value;
             }
         }
 
         return default;
     }
+
+    private bool TryReflectFromGlyph<T>(Glyph glyph, out T value)
+    {
+        FieldInfo[] fields = glyph.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (FieldInfo field in fields)
+        {
+            if (typeof(T).IsAssignableFrom(field.FieldType))
+            {
+                value = (T)field.GetValue(glyph);
+                return true;
+            }
+        }
+
+        value = default;
+        return false;
+    }
+
+    private readonly LinkedList<(Enum glyph, Type type)> _usageOrder = new();
+    private void EvictCache()
+    {
+        if (_evictionPolicy == CacheEvictionPolicy.LRU && _usageOrder.Count > 0)
+        {
+            var lruKey = _usageOrder.First.Value;
+            _usageOrder.RemoveFirst();
+            _valueCache.Remove(lruKey);
+
+            // Debug.Log($"Evicted {lruKey.glyph} ({lruKey.type.Name}) from cache, cache size: {_valueCache.Count}");
+        }
+    }
+}
+
+public enum CacheEvictionPolicy
+{
+    LRU
 }

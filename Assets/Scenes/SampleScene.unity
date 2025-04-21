@@ -2017,6 +2017,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _iconsFolder: Glyphs
+  _cacheSize: 8
+  _evictionPolicy: 0
 --- !u!114 &1778062886
 MonoBehaviour:
   m_ObjectHideFlags: 0
