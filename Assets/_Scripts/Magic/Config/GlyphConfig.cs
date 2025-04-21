@@ -31,16 +31,16 @@ public class GlyphConfig
         } },
 
         // EFFECTS
-        { Effect.Enlarge, new EffectGlyph(){
-            Description = "Makes object larger. There is a size limit",
-            Power = 1.25f,
-            Color = Color.red,
-        } },
         { Effect.Launch, new EffectGlyph(){
             Description = "Sends the object high up in the air",
             Power = 10f,
             Color = Color.white,
         }},
+        { Effect.Resize, new EffectGlyph(){
+            Description = "Changes the size of the object\nModify with Amplify to enlarge, Dampen to shrink",
+            Power = 1,
+            Color = Color.red,
+        } },
 
         // MODIFIERS
         { Modifier.Accelerate, new ModifierGlyph(){
@@ -50,12 +50,12 @@ public class GlyphConfig
         }},
         { Modifier.Amplify, new ModifierGlyph(){
             Description = "Increases the power of the effect",
-            Compatibles = new(){Effect.Launch, Effect.Enlarge},
+            Compatibles = new(){Effect.Launch, Effect.Resize},
             Factor = 1.25f
         } },
         { Modifier.Dampen, new ModifierGlyph(){
             Description = "Decreases the power of the effect",
-            Compatibles = new(){Effect.Launch, Effect.Enlarge},
+            Compatibles = new(){Effect.Launch, Effect.Resize},
             Factor = 0.75f
         } },
         { Modifier.Decelerate, new ModifierGlyph(){

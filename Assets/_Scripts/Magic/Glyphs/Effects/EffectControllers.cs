@@ -45,7 +45,7 @@ public class LaunchController : EffectController
     }
 }
 
-public class EnlargeController : EffectController
+public class ResizeController : EffectController
 {
     public override void ApplyEffect()
     {

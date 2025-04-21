@@ -9,6 +9,6 @@ public class EffectGlyph : Glyph
 
 public enum Effect
 {
-    Enlarge,
     Launch,
+    Resize,
 }
