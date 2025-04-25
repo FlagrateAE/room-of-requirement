@@ -8,6 +8,6 @@ public class PrefabInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.Bind<GameObject>().WithId("Projectile").FromInstance(_projectilePrefab).AsSingle();
+        Container.Bind<GameObject>().WithId(Form.Projectile).FromInstance(_projectilePrefab).AsSingle();
     }
 }

@@ -49,7 +49,7 @@ public class SelfCaster : FormCaster
 
 public class ProjectileCaster : FormCaster
 {
-    [Inject(Id = "Projectile")]
+    [Inject(Id = Form.Projectile)]
     private GameObject _spellPrefab;
     private Transform _spellSpawner;
 
