@@ -27,17 +27,22 @@ public class SpellProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider target)
     {
-        if (
-            _armed
-            && target.gameObject.TryGetComponent(out SpellInteractable interactable)
-            && interactable.IsCompatibleWith(SpellData.Effect)
-        )
+        if (_armed)
         {
-            interactable.ApplySpell(SpellData);
             if (_pierceDepth == 0)
                 Destroy(gameObject);
             else
+            {
                 _pierceDepth--;
+            }
+
+            if (
+                target.gameObject.TryGetComponent(out SpellInteractable interactable) &&
+                interactable.IsCompatibleWith(SpellData.Effect)
+            )
+            {
+                interactable.ApplySpell(SpellData);
+            }
         }
 
 
