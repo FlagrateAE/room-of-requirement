@@ -44,8 +44,6 @@ public class SpellProjectile : MonoBehaviour
                 interactable.ApplySpell(SpellData);
             }
         }
-
-
     }
 
     public void LoadSpellData(SpellData data)

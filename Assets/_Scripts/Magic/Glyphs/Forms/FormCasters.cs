@@ -32,7 +32,7 @@ public abstract class FormCaster : MonoBehaviour
     public abstract void Cast();
     public virtual void RegisterModifier(Modifier modifier) { }
 
-    public void ToggleArmed () => _isArmed = !_isArmed;
+    public void ToggleArmed() => _isArmed = !_isArmed;
 }
 
 [RequireComponent(typeof(SpellInteractable))]
@@ -51,12 +51,12 @@ public class ProjectileCaster : FormCaster
 {
     [Inject(Id = "Projectile")]
     private GameObject _spellPrefab;
-    private Transform _playerCamera;
+    private Transform _spellSpawner;
 
     public override void Initialize(SpellData spell)
     {
         base.Initialize(spell);
-        _playerCamera = Camera.main.transform;
+        _spellSpawner = GetComponentInParent<ISpellCaster>().SpellSpawner;
     }
 
     public override void RegisterModifier(Modifier modifier)
@@ -71,7 +71,7 @@ public class ProjectileCaster : FormCaster
 
     public override void Cast()
     {
-        GameObject spellInstance = Instantiate(_spellPrefab, _playerCamera.position, _playerCamera.rotation);
+        GameObject spellInstance = Instantiate(_spellPrefab, _spellSpawner.position, _spellSpawner.rotation);
 
         SpellProjectile spellComponent = spellInstance.GetComponent<SpellProjectile>();
         spellComponent.LoadSpellData(_spell);
