@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Pool;
 using Zenject;
 
 public abstract class FormCaster : MonoBehaviour
@@ -47,16 +48,30 @@ public class SelfCaster : FormCaster
     }
 }
 
-public class ProjectileCaster : FormCaster
+public class ProjectileCaster : FormCaster, IFormCasterPooler
 {
     [Inject(Id = Form.Projectile)]
     private GameObject _spellPrefab;
     private Transform _spellSpawner;
 
+    private ObjectPool<GameObject> _pool;
+
     public override void Initialize(SpellData spell)
     {
         base.Initialize(spell);
         _spellSpawner = GetComponentInParent<ISpellCaster>().SpellSpawner;
+
+        _pool = new ObjectPool<GameObject>(
+            createFunc: () =>
+                CreateSpell(),
+            actionOnGet: spellInstance =>
+                spellInstance.GetComponent<SpellProjectile>().OnGetFromPool(_spellSpawner),
+            actionOnRelease: spellInstance =>
+                spellInstance.GetComponent<SpellProjectile>().OnReleaseToPool(),
+            actionOnDestroy: spellInstance =>
+                Destroy(spellInstance),
+            collectionCheck: true
+        );
     }
 
     public override void RegisterModifier(Modifier modifier)
@@ -71,9 +86,22 @@ public class ProjectileCaster : FormCaster
 
     public override void Cast()
     {
-        GameObject spellInstance = Instantiate(_spellPrefab, _spellSpawner.position, _spellSpawner.rotation);
+        GameObject spellInstance = _pool.Get();
+        spellInstance.transform.SetPositionAndRotation(_spellSpawner.position, _spellSpawner.rotation);
+    }
+
+    public GameObject CreateSpell()
+    {
+        GameObject spellInstance = Instantiate(_spellPrefab);
 
         SpellProjectile spellComponent = spellInstance.GetComponent<SpellProjectile>();
-        spellComponent.LoadSpellData(_spell);
+        spellComponent.LoadSpellData(_spell, _pool);
+
+        return spellInstance;
     }
+}
+
+public interface IFormCasterPooler
+{
+    GameObject CreateSpell();
 }
