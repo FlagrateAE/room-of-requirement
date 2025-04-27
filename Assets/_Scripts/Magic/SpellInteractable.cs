@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Zenject;
 
+[RequireComponent(typeof(Rigidbody))]
 public class SpellInteractable : MonoBehaviour
 {
     [Inject]
